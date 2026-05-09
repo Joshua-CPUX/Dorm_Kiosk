@@ -1,0 +1,52 @@
+<view class="index">
+  <view class="banner">
+    <swiper indicator-dots autoplay interval="3000" circular>
+      <block wx:for="{{banners}}" wx:key="index">
+        <swiper-item>
+          <image src="{{item.image}}" mode="aspectFill" />
+        </swiper-item>
+      </block>
+    </swiper>
+  </view>
+
+  <view class="category-section">
+    <view class="section-title">商品分类</view>
+    <view class="category-grid">
+      <view
+        class="category-item"
+        wx:for="{{categories}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="goToCategory"
+      >
+        <view class="category-icon">
+          <text class="icon">{{item.icon || '📦'}}</text>
+        </view>
+        <text class="category-name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="product-section">
+    <view class="section-title">热门商品</view>
+    <view class="product-grid">
+      <view
+        class="product-item"
+        wx:for="{{hotProducts}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="goToProduct"
+      >
+        <image src="{{item.image}}" mode="aspectFill" class="product-image" />
+        <view class="product-info">
+          <text class="product-name">{{item.name}}</text>
+          <text class="product-subtitle">{{item.subtitle}}</text>
+          <view class="product-bottom">
+            <text class="product-price">¥{{item.price}}</text>
+            <text class="product-sales">已售{{item.sales}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

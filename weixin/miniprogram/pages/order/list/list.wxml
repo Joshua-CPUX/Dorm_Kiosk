@@ -1,0 +1,45 @@
+<view class="order-list-page">
+  <view class="status-tabs">
+    <view
+      class="tab-item {{status === item.value ? 'active' : ''}}"
+      wx:for="{{statusList}}"
+      wx:key="value"
+      data-value="{{item.value}}"
+      bindtap="onStatusChange"
+    >
+      {{item.label}}
+    </view>
+  </view>
+
+  <view class="order-list">
+    <view
+      class="order-item"
+      wx:for="{{orders}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="goToDetail"
+    >
+      <view class="order-header">
+        <text class="order-no">订单号: {{item.orderNo}}</text>
+        <text class="order-status status-{{item.status}}">{{item.statusName}}</text>
+      </view>
+      <view class="order-products">
+        <view class="product-item" wx:for="{{item.items}}" wx:for-item="pitem" wx:key="id">
+          <image src="{{pitem.productImage}}" mode="aspectFill" class="product-image" />
+          <view class="product-info">
+            <text class="product-name">{{pitem.productName}}</text>
+            <text class="product-price">¥{{pitem.price}} x {{pitem.quantity}}</text>
+          </view>
+        </view>
+      </view>
+      <view class="order-footer">
+        <text class="order-amount">合计: ¥{{item.payAmount}}</text>
+        <text class="order-time">{{item.createTime}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty-tip" wx:if="{{orders.length === 0}}">
+    <text>暂无订单</text>
+  </view>
+</view>

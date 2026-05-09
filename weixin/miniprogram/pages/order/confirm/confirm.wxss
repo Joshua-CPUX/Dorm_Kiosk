@@ -1,0 +1,187 @@
+/* 订单确认页 */
+.confirm-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-bottom: 160rpx;
+}
+
+/* 地址区域 */
+.address-section {
+  background: #ffffff;
+  padding: 32rpx 24rpx;
+  margin-bottom: 16rpx;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  position: relative;
+}
+
+.address-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6rpx;
+  background: repeating-linear-gradient(
+    90deg,
+    #1890ff 0%,
+    #1890ff 50%,
+    transparent 50%,
+    transparent 100%
+  );
+  background-size: 20rpx 6rpx;
+}
+
+.address-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.address-info {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-bottom: 10rpx;
+}
+
+.consignee {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #222222;
+}
+
+.phone {
+  font-size: 28rpx;
+  color: #666666;
+}
+
+.address-detail {
+  font-size: 26rpx;
+  color: #888888;
+  line-height: 1.5;
+  display: block;
+}
+
+.no-address {
+  flex: 1;
+  font-size: 28rpx;
+  color: #bbbbbb;
+}
+
+.arrow {
+  font-size: 28rpx;
+  color: #cccccc;
+  flex-shrink: 0;
+}
+
+/* 配送方式 */
+.order-type {
+  background: #ffffff;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  display: flex;
+  gap: 20rpx;
+}
+
+.type-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24rpx 16rpx;
+  border-radius: 16rpx;
+  border: 3rpx solid #e8e8e8;
+  background: #fafafa;
+  transition: all 0.2s;
+  gap: 12rpx;
+}
+
+.type-item.active {
+  border-color: #1890ff;
+  background: #e6f7ff;
+}
+
+.type-icon {
+  font-size: 48rpx;
+}
+
+.type-name {
+  font-size: 28rpx;
+  color: #555555;
+  font-weight: 500;
+}
+
+.type-item.active .type-name {
+  color: #1890ff;
+  font-weight: 600;
+}
+
+/* 备注区域 */
+.remark-section {
+  background: #ffffff;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.remark-label {
+  font-size: 28rpx;
+  color: #333333;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.remark-section input {
+  flex: 1;
+  font-size: 28rpx;
+  color: #555555;
+  padding: 8rpx 0;
+}
+
+/* 底部提交栏 */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120rpx;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  padding: 0 24rpx;
+  padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: 0 -2rpx 16rpx rgba(0, 0, 0, 0.08);
+  gap: 24rpx;
+}
+
+.total-info {
+  flex: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 8rpx;
+}
+
+.total-label {
+  font-size: 26rpx;
+  color: #666666;
+}
+
+.total-price {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #ff4d4f;
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #ff4d4f, #cf1322);
+  color: #ffffff;
+  border-radius: 48rpx;
+  padding: 20rpx 56rpx;
+  font-size: 30rpx;
+  font-weight: 500;
+  white-space: nowrap;
+}

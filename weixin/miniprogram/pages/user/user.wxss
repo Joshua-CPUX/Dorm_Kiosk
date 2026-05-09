@@ -1,0 +1,87 @@
+/* 个人中心页 */
+.user-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-bottom: 60rpx;
+}
+
+/* 用户头部 */
+.user-header {
+  background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+  padding: 80rpx 40rpx 120rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.avatar {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  border: 6rpx solid rgba(255, 255, 255, 0.6);
+  background: #e6f7ff;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.2);
+}
+
+.nickname {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 1rpx;
+}
+
+/* 菜单区域 */
+.menu-section {
+  background: #ffffff;
+  border-radius: 16rpx;
+  margin: -60rpx 24rpx 20rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
+}
+
+.menu-section + .menu-section {
+  margin-top: 0;
+  margin-bottom: 20rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 32rpx 24rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+  transition: background 0.1s;
+  gap: 20rpx;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-item:active {
+  background: #f8f8f8;
+}
+
+.menu-icon {
+  font-size: 40rpx;
+  width: 56rpx;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.menu-name {
+  flex: 1;
+  font-size: 30rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+.menu-arrow {
+  font-size: 28rpx;
+  color: #cccccc;
+  font-weight: 300;
+}

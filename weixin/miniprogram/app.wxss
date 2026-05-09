@@ -1,0 +1,65 @@
+/* 全局样式 */
+page {
+  background-color: #f5f5f5;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+  font-size: 28rpx;
+  color: #333333;
+  box-sizing: border-box;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* 通用卡片 */
+.card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin: 0 24rpx 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+/* 通用按钮 */
+.btn-primary {
+  background: linear-gradient(135deg, #1890ff, #096dd9);
+  color: #ffffff;
+  border-radius: 48rpx;
+  padding: 20rpx 40rpx;
+  text-align: center;
+  font-size: 30rpx;
+  font-weight: 500;
+}
+
+.btn-outline {
+  border: 2rpx solid #1890ff;
+  color: #1890ff;
+  border-radius: 48rpx;
+  padding: 18rpx 40rpx;
+  text-align: center;
+  font-size: 28rpx;
+}
+
+/* 价格颜色 */
+.price-text {
+  color: #ff4d4f;
+  font-weight: 600;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 40rpx;
+  color: #bbbbbb;
+  font-size: 28rpx;
+}
+
+/* 分割线 */
+.divider {
+  height: 1rpx;
+  background: #f0f0f0;
+  margin: 0 24rpx;
+}

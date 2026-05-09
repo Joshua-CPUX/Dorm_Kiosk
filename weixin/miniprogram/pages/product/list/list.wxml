@@ -1,0 +1,40 @@
+<view class="product-list">
+  <view class="search-bar">
+    <input
+      type="text"
+      placeholder="搜索商品"
+      value="{{keyword}}"
+      bindconfirm="onSearch"
+    />
+  </view>
+
+  <view class="product-grid">
+    <view
+      class="product-item"
+      wx:for="{{products}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="goToDetail"
+    >
+      <image src="{{item.image}}" mode="aspectFill" class="product-image" />
+      <view class="product-info">
+        <text class="product-name">{{item.name}}</text>
+        <text class="product-subtitle">{{item.subtitle}}</text>
+        <view class="product-bottom">
+          <text class="product-price">¥{{item.price}}</text>
+          <text class="product-sales">已售{{item.sales}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="loading-tip" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+  <view class="loading-tip" wx:elif="{{!hasMore && products.length > 0}}">
+    <text>没有更多了</text>
+  </view>
+  <view class="empty-tip" wx:if="{{!loading && products.length === 0}}">
+    <text>暂无商品</text>
+  </view>
+</view>

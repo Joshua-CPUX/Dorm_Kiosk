@@ -1,0 +1,40 @@
+<view class="product-detail">
+  <view class="detail-image">
+    <image src="{{product.image}}" mode="aspectFill" />
+  </view>
+
+  <view class="detail-info">
+    <view class="price-row">
+      <text class="price">¥{{product.price}}</text>
+      <text class="original-price" wx:if="{{product.originalPrice}}">¥{{product.originalPrice}}</text>
+    </view>
+    <text class="name">{{product.name}}</text>
+    <text class="subtitle">{{product.subtitle}}</text>
+    <view class="stock-row">
+      <text class="stock">库存: {{product.stock}}</text>
+      <text class="sales">销量: {{product.sales}}</text>
+    </view>
+  </view>
+
+  <view class="detail-content">
+    <view class="content-title">商品详情</view>
+    <text class="description">{{product.description || '暂无商品描述'}}</text>
+  </view>
+
+  <view class="bottom-bar">
+    <view class="action-icons">
+      <view class="icon-item" bindtap="goToHome">
+        <text class="icon">🏠</text>
+        <text class="label">首页</text>
+      </view>
+      <view class="icon-item" bindtap="goToCart">
+        <text class="icon">🛒</text>
+        <text class="label">购物车</text>
+      </view>
+    </view>
+    <view class="action-buttons">
+      <view class="btn-add" bindtap="onAddCart">加入购物车</view>
+      <view class="btn-buy" bindtap="onBuyNow">立即购买</view>
+    </view>
+  </view>
+</view>
