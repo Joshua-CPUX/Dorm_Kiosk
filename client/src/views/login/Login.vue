@@ -68,7 +68,7 @@ const handleLogin = async () => {
         ElMessage.success('登录成功');
         router.push('/');
       } catch (error) {
-        console.error(error);
+        ElMessage.error(error.message || '用户名或密码错误');
       } finally {
         loading.value = false;
       }

@@ -34,7 +34,7 @@
         <el-table-column prop="status" label="状态" width="100">
           <template #default="{ row }">
             <el-tag :type="getStatusType(row.status)">
-              {{ row.statusName }}
+              {{ statusMap[row.status] || row.statusName || '-' }}
             </el-tag>
           </template>
         </el-table-column>
@@ -82,7 +82,7 @@
         </el-descriptions-item>
         <el-descriptions-item label="订单状态">
           <el-tag :type="getStatusType(currentOrder.status)">
-            {{ currentOrder.statusName }}
+            {{ statusMap[currentOrder.status] || currentOrder.statusName || '-' }}
           </el-tag>
         </el-descriptions-item>
         <el-descriptions-item label="下单时间">{{ currentOrder.createTime }}</el-descriptions-item>
@@ -134,6 +134,8 @@ const pagination = reactive({
   pageSize: 10,
   total: 0
 });
+
+const statusMap = { 1: '待支付', 2: '已支付', 3: '配送中', 4: '已完成', 5: '已取消' };
 
 const getStatusType = (status) => {
   const types = { 1: 'warning', 2: '', 3: 'primary', 4: 'success', 5: 'info' };

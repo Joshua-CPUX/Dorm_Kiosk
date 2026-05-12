@@ -29,7 +29,13 @@ request.interceptors.response.use(
     return res;
   },
   (error) => {
-    ElMessage.error(error.message || '网络错误');
+    if (error.response?.status === 401) {
+      localStorage.removeItem('admin_token');
+      localStorage.removeItem('admin_id');
+      window.location.href = '/login';
+      return Promise.reject(error);
+    }
+    ElMessage.error(error.response?.data?.message || error.message || '网络错误');
     return Promise.reject(error);
   }
 );

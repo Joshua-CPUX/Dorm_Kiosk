@@ -13,7 +13,8 @@
         <el-table-column prop="name" label="分类名称" />
         <el-table-column prop="icon" label="图标" width="100">
           <template #default="{ row }">
-            <el-icon v-if="row.icon"><img :src="row.icon" style="width: 24px; height: 24px;" /></el-icon>
+            <el-icon v-if="row.icon" :size="20"><component :is="row.icon" /></el-icon>
+            <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column prop="sort" label="排序" width="100" />
@@ -43,8 +44,20 @@
         <el-form-item label="分类名称" prop="name">
           <el-input v-model="categoryForm.name" placeholder="请输入分类名称" />
         </el-form-item>
+        <el-form-item label="图标">
+          <el-input v-model="categoryForm.icon" placeholder="Element Plus 图标名称，如 Goods" />
+        </el-form-item>
         <el-form-item label="排序">
           <el-input-number v-model="categoryForm.sort" :min="0" style="width: 100%;" />
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-switch
+            v-model="categoryForm.status"
+            :active-value="1"
+            :inactive-value="0"
+            active-text="正常"
+            inactive-text="禁用"
+          />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -70,7 +83,9 @@ const formRef = ref(null);
 const categoryForm = reactive({
   id: null,
   name: '',
-  sort: 0
+  icon: '',
+  sort: 0,
+  status: 1
 });
 
 const rules = {
@@ -101,7 +116,9 @@ const handleEdit = (row) => {
   Object.assign(categoryForm, {
     id: row.id,
     name: row.name,
-    sort: row.sort
+    icon: row.icon || '',
+    sort: row.sort,
+    status: row.status ?? 1
   });
   dialogVisible.value = true;
 };
@@ -145,7 +162,9 @@ const resetForm = () => {
   Object.assign(categoryForm, {
     id: null,
     name: '',
-    sort: 0
+    icon: '',
+    sort: 0,
+    status: 1
   });
   formRef.value?.resetFields();
 };

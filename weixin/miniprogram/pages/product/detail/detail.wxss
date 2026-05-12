@@ -98,6 +98,54 @@
   line-height: 1.8;
 }
 
+/* 数量选择 */
+.quantity-card {
+  background: #ffffff;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.quantity-label {
+  font-size: 28rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+.quantity-selector {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.qty-btn {
+  width: 64rpx;
+  height: 64rpx;
+  border: 2rpx solid #dddddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  color: #333333;
+  border-radius: 8rpx;
+  background: #f8f8f8;
+}
+
+.qty-btn.disabled {
+  color: #cccccc;
+  background: #f0f0f0;
+}
+
+.qty-value {
+  min-width: 80rpx;
+  text-align: center;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #222222;
+}
+
 /* 底部操作栏 */
 .bottom-bar {
   position: fixed;

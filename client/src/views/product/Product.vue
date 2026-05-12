@@ -72,6 +72,17 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <el-pagination
+        v-model:current-page="pagination.pageNum"
+        v-model:page-size="pagination.pageSize"
+        :total="pagination.total"
+        :page-sizes="[10, 20, 50, 100]"
+        layout="total, sizes, prev, pager, next, jumper"
+        style="margin-top: 20px; justify-content: flex-end;"
+        @size-change="loadData"
+        @current-change="loadData"
+      />
     </el-card>
 
     <el-dialog
@@ -138,6 +149,12 @@ const categoryList = ref([]);
 const loading = ref(false);
 const searchKeyword = ref('');
 const searchCategory = ref(null);
+
+const pagination = reactive({
+  pageNum: 1,
+  pageSize: 10,
+  total: 0
+});
 const dialogVisible = ref(false);
 const dialogTitle = ref('添加商品');
 const isEdit = ref(false);
@@ -166,10 +183,16 @@ const loadData = async () => {
   loading.value = true;
   try {
     const [productRes, categoryRes] = await Promise.all([
-      getProductList({ keyword: searchKeyword.value, categoryId: searchCategory.value }),
+      getProductList({
+        pageNum: pagination.pageNum,
+        pageSize: pagination.pageSize,
+        keyword: searchKeyword.value || undefined,
+        categoryId: searchCategory.value || undefined
+      }),
       getCategoryList()
     ]);
-    productList.value = productRes.data || [];
+    productList.value = productRes.data?.records || productRes.data || [];
+    pagination.total = productRes.data?.total || 0;
     categoryList.value = categoryRes.data || [];
   } catch (error) {
     console.error(error);

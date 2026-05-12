@@ -53,7 +53,16 @@ Page({
   },
 
   onQuantityChange(e) {
-    this.setData({ quantity: parseInt(e.detail.value) });
+    const type = e.currentTarget.dataset.type;
+    let qty = this.data.quantity;
+    if (type === 'plus') {
+      if (qty >= this.data.product.stock) return;
+      qty++;
+    } else {
+      if (qty <= 1) return;
+      qty--;
+    }
+    this.setData({ quantity: qty });
   },
 
   goToHome() {

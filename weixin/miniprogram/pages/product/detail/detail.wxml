@@ -21,6 +21,15 @@
     <text class="description">{{product.description || '暂无商品描述'}}</text>
   </view>
 
+  <view class="quantity-card">
+    <text class="quantity-label">购买数量</text>
+    <view class="quantity-selector">
+      <view class="qty-btn {{quantity <= 1 ? 'disabled' : ''}}" bindtap="onQuantityChange" data-type="minus">-</view>
+      <text class="qty-value">{{quantity}}</text>
+      <view class="qty-btn {{quantity >= product.stock ? 'disabled' : ''}}" bindtap="onQuantityChange" data-type="plus">+</view>
+    </view>
+  </view>
+
   <view class="bottom-bar">
     <view class="action-icons">
       <view class="icon-item" bindtap="goToHome">
