@@ -1,15 +1,17 @@
 Page({
   data: {
-    userInfo: {}
+    userInfo: {},
+    logoTapCount: 0,
+    logoTapTimer: null
   },
 
   onShow() {
-    const app = getApp();
+    var app = getApp();
     if (!app.globalData.token) {
       wx.navigateTo({ url: '/pages/login/login' });
       return;
     }
-    const cached = app.globalData.userInfo;
+    var cached = app.globalData.userInfo;
     if (cached) {
       this.setData({ userInfo: cached });
     }
@@ -17,17 +19,15 @@ Page({
   },
 
   loadUserInfo(userId) {
-    if (!userId) {
-      console.error('[user] userId is null, cannot load user info');
-      return;
-    }
-    const api = require('../../api/index.js');
-    api.getUserInfo(userId).then(res => {
-      this.setData({ userInfo: res.data });
-      const app = getApp();
+    if (!userId) return;
+    var api = require('../../api/index.js');
+    var self = this;
+    api.getUserInfo(userId).then(function(res) {
+      self.setData({ userInfo: res.data });
+      var app = getApp();
       app.globalData.userInfo = res.data;
       wx.setStorageSync('userInfo', res.data);
-    }).catch(err => {
+    }).catch(function(err) {
       console.error('加载用户信息失败', err);
     });
   },
@@ -38,6 +38,34 @@ Page({
 
   goToAddress() {
     wx.navigateTo({ url: '/pages/address/address' });
+  },
+
+  goToOwnerOrders() {
+    wx.navigateTo({ url: '/pages/owner/orders/orders' });
+  },
+
+  goToOwnerProducts() {
+    wx.navigateTo({ url: '/pages/owner/products/products' });
+  },
+
+  // 连续点击 Logo 5 次触发店主激活入口
+  onLogoTap() {
+    var self = this;
+    var count = this.data.logoTapCount + 1;
+    this.setData({ logoTapCount: count });
+
+    if (this.data.logoTapTimer) clearTimeout(this.data.logoTapTimer);
+
+    if (count >= 5) {
+      this.setData({ logoTapCount: 0 });
+      wx.navigateTo({ url: '/pages/owner/activate/activate' });
+      return;
+    }
+
+    var timer = setTimeout(function() {
+      self.setData({ logoTapCount: 0 });
+    }, 2000);
+    this.setData({ logoTapTimer: timer });
   },
 
   onLogout() {

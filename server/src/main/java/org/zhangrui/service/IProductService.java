@@ -80,4 +80,9 @@ public interface IProductService {
      * @param quantity 数量变化
      */
     void updateStock(Long id, Integer quantity);
+
+    /**
+     * 获取全部商品（含下架，供管理端使用）
+     */
+    Page<Product> getAllProductPage(Integer pageNum, Integer pageSize, String keyword);
 }

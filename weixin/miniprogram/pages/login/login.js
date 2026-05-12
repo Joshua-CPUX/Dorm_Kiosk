@@ -7,7 +7,8 @@ Page({
     password: '',
     nickname: '',
     phone: '',
-    loading: false
+    loading: false,
+    wxLoading: false
   },
 
   switchMode: function(e) {
@@ -20,9 +21,56 @@ Page({
   onNicknameInput: function(e) { this.setData({ nickname: e.detail.value }); },
   onPhoneInput: function(e) { this.setData({ phone: e.detail.value }); },
 
-  onSubmit: function() {
-    console.log('[login] onSubmit called, mode=' + this.data.mode + ' loading=' + this.data.loading);
+  onWxLogin: function() {
+    if (this.data.wxLoading) return;
+    this.setData({ wxLoading: true });
+    var self = this;
 
+    wx.login({
+      success: function(loginRes) {
+        if (!loginRes.code) {
+          wx.showToast({ title: '微信登录失败', icon: 'none' });
+          self.setData({ wxLoading: false });
+          return;
+        }
+        var code = loginRes.code;
+
+        // 尝试获取用户头像昵称（用户可以拒绝，不影响登录）
+        wx.getUserProfile({
+          desc: '用于展示您的头像和昵称',
+          success: function(profileRes) {
+            self._doWxLogin(code, profileRes.userInfo.nickName, profileRes.userInfo.avatarUrl);
+          },
+          fail: function() {
+            self._doWxLogin(code, null, null);
+          }
+        });
+      },
+      fail: function() {
+        wx.showToast({ title: '微信登录失败', icon: 'none' });
+        self.setData({ wxLoading: false });
+      }
+    });
+  },
+
+  _doWxLogin: function(code, nickname, avatarUrl) {
+    var self = this;
+    api.wxLogin({ code: code, nickname: nickname, avatarUrl: avatarUrl }).then(function(res) {
+      var userVO = res.data;
+      var app = getApp();
+      app.setUserData(userVO.token, userVO.id, userVO);
+      self.setData({ wxLoading: false });
+      wx.showToast({ title: '登录成功', icon: 'success' });
+      setTimeout(function() {
+        wx.switchTab({ url: '/pages/index/index' });
+      }, 800);
+    }).catch(function(err) {
+      console.error('[wx-login] failed', JSON.stringify(err));
+      self.setData({ wxLoading: false });
+    });
+  },
+
+  onSubmit: function() {
     if (this.data.loading) return;
 
     var mode = this.data.mode;
@@ -45,7 +93,6 @@ Page({
     }
 
     this.setData({ loading: true });
-    console.log('[login] sending request, username=' + username);
 
     var self = this;
     var call = mode === 'login'
@@ -53,20 +100,14 @@ Page({
       : api.register({ username: username, password: password, nickname: nickname || null, phone: phone || null });
 
     call.then(function(res) {
-      console.log('[login] request success', JSON.stringify(res.data));
-      try {
-        var userVO = res.data;
-        var app = getApp();
-        app.setUserData(userVO.token, userVO.id, userVO);
-        self.setData({ loading: false });
-        wx.showToast({ title: mode === 'login' ? '登录成功' : '注册成功', icon: 'success' });
-        setTimeout(function() {
-          wx.switchTab({ url: '/pages/index/index' });
-        }, 800);
-      } catch (e) {
-        console.error('[login] inner error', e);
-        self.setData({ loading: false });
-      }
+      var userVO = res.data;
+      var app = getApp();
+      app.setUserData(userVO.token, userVO.id, userVO);
+      self.setData({ loading: false });
+      wx.showToast({ title: mode === 'login' ? '登录成功' : '注册成功', icon: 'success' });
+      setTimeout(function() {
+        wx.switchTab({ url: '/pages/index/index' });
+      }, 800);
     }).catch(function(err) {
       console.error('[login] request failed', JSON.stringify(err));
       self.setData({ loading: false });

@@ -28,6 +28,8 @@ public class UserVO implements Serializable {
 
     private BigDecimal balance;
 
+    private Integer role;
+
     private Integer status;
 
 }

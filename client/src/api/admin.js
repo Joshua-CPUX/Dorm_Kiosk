@@ -71,3 +71,11 @@ export function getProductRanking(limit) {
 export function getOrderStatusStats() {
   return request.get('/admin/statistics/order-status');
 }
+
+export function getUserList(params) {
+  return request.get('/admin/user/list', { params });
+}
+
+export function updateUserStatus(id, status) {
+  return request.put('/admin/user/status', null, { params: { id, status } });
+}

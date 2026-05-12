@@ -27,6 +27,10 @@
           <el-icon><List /></el-icon>
           <span>订单管理</span>
         </el-menu-item>
+        <el-menu-item index="/user">
+          <el-icon><UserFilled /></el-icon>
+          <span>用户管理</span>
+        </el-menu-item>
       </el-menu>
     </el-aside>
 
@@ -72,7 +76,8 @@ const pageTitleMap = {
   '/dashboard': '仪表盘',
   '/product': '商品管理',
   '/category': '分类管理',
-  '/order': '订单管理'
+  '/order': '订单管理',
+  '/user': '用户管理'
 };
 
 const pageTitle = computed(() => pageTitleMap[route.path] || '仪表盘');

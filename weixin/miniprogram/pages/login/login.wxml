@@ -5,6 +5,15 @@
     <text class="app-slogan">快捷购物，轻松生活</text>
   </view>
 
+  <!-- 微信一键登录 -->
+  <view class="wx-login-section">
+    <view class="wx-login-btn {{wxLoading ? 'disabled' : ''}}" bindtap="onWxLogin">
+      <text class="wx-icon">微信</text>
+      <text>一键登录</text>
+    </view>
+    <view class="divider"><text>— 或使用账号登录 —</text></view>
+  </view>
+
   <!-- Tab 切换 -->
   <view class="tab-bar">
     <view class="tab {{mode === 'login' ? 'active' : ''}}" bindtap="switchMode" data-mode="login">登录</view>

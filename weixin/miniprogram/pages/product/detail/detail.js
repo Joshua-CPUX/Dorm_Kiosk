@@ -54,5 +54,13 @@ Page({
 
   onQuantityChange(e) {
     this.setData({ quantity: parseInt(e.detail.value) });
+  },
+
+  goToHome() {
+    wx.switchTab({ url: '/pages/index/index' });
+  },
+
+  goToCart() {
+    wx.switchTab({ url: '/pages/cart/cart' });
   }
 });

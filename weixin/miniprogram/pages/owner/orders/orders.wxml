@@ -1,0 +1,64 @@
+<view class="orders-page">
+  <!-- 状态筛选 tabs -->
+  <scroll-view class="tab-scroll" scroll-x>
+    <view class="tab-bar">
+      <view
+        wx:for="{{tabs}}"
+        wx:key="value"
+        class="tab {{currentTab === item.value ? 'active' : ''}}"
+        bindtap="onTabChange"
+        data-value="{{item.value}}"
+      >{{item.label}}</view>
+    </view>
+  </scroll-view>
+
+  <!-- 订单列表 -->
+  <view wx:if="{{orderList.length === 0 && !loading}}" class="empty">
+    <text>暂无订单</text>
+  </view>
+
+  <view class="order-list">
+    <view wx:for="{{orderList}}" wx:key="id" class="order-card">
+      <view class="order-header">
+        <text class="order-no">{{item.orderNo}}</text>
+        <text class="status status-{{item.status}}">{{item.statusName}}</text>
+      </view>
+      <view class="order-body">
+        <view class="order-row">
+          <text class="label">用户ID：</text>
+          <text>{{item.userId}}</text>
+        </view>
+        <view class="order-row">
+          <text class="label">下单时间：</text>
+          <text>{{item.createTime}}</text>
+        </view>
+        <view class="order-row">
+          <text class="label">订单类型：</text>
+          <text>{{item.orderType === 1 ? '自取' : '配送'}}</text>
+        </view>
+        <view class="order-row">
+          <text class="label">实付金额：</text>
+          <text class="amount">¥{{item.payAmount}}</text>
+        </view>
+      </view>
+      <view class="order-actions">
+        <view
+          wx:if="{{item.status === 2}}"
+          class="action-btn btn-ship"
+          bindtap="onShip"
+          data-id="{{item.id}}"
+        >发货</view>
+        <view
+          wx:if="{{item.status === 3}}"
+          class="action-btn btn-done"
+          bindtap="onComplete"
+          data-id="{{item.id}}"
+        >完成</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载更多 -->
+  <view wx:if="{{hasMore}}" class="load-more" bindtap="loadMore">加载更多</view>
+  <view wx:if="{{!hasMore && orderList.length > 0}}" class="no-more">没有更多了</view>
+</view>

@@ -55,10 +55,14 @@ jwt:
 
 wechat:
   appid: your_wechat_appid
+  appsecret: your_wechat_appsecret
   mchid: your_merchant_id
   serial-no: your_serial_no
   api-v3-key: your_api_v3_key
   notify-url: http://your-domain/api/order/notify
+
+owner:
+  activation-code: SHOP2024SECRET
 
 springdoc:
   api-docs:

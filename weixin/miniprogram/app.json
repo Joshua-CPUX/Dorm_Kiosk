@@ -9,7 +9,10 @@
     "pages/order/detail/detail",
     "pages/order/confirm/confirm",
     "pages/user/user",
-    "pages/address/address"
+    "pages/address/address",
+    "pages/owner/activate/activate",
+    "pages/owner/orders/orders",
+    "pages/owner/products/products"
   ],
   "window": {
     "navigationBarTitleText": "校园小卖部",

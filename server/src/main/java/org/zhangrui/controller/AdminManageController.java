@@ -8,9 +8,12 @@ import org.zhangrui.model.dto.ProductUpdateDTO;
 import org.zhangrui.model.entity.Category;
 import org.zhangrui.model.entity.Product;
 import org.zhangrui.model.vo.DashboardVO;
+import org.zhangrui.model.vo.UserVO;
 import org.zhangrui.service.ICategoryService;
 import org.zhangrui.service.IProductService;
 import org.zhangrui.service.IStatisticsService;
+import org.zhangrui.service.IUserService;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.util.List;
 import java.util.Map;
@@ -29,6 +32,7 @@ public class AdminManageController {
     private final IProductService productService;
     private final ICategoryService categoryService;
     private final IStatisticsService statisticsService;
+    private final IUserService userService;
 
     /**
      * 获取商品列表
@@ -155,5 +159,26 @@ public class AdminManageController {
     public Result<Map<String, Object>> getOrderStatusStats() {
         Map<String, Object> stats = statisticsService.getOrderStatusStats();
         return Result.success(stats);
+    }
+
+    /**
+     * 获取用户列表
+     */
+    @GetMapping("/user/list")
+    public Result<Page<UserVO>> getUserList(
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(required = false) String keyword) {
+        Page<UserVO> users = userService.getUserList(pageNum, pageSize, keyword);
+        return Result.success(users);
+    }
+
+    /**
+     * 更新用户状态
+     */
+    @PutMapping("/user/status")
+    public Result<Void> updateUserStatus(@RequestParam Long id, @RequestParam Integer status) {
+        userService.updateUserStatus(id, status);
+        return Result.success();
     }
 }

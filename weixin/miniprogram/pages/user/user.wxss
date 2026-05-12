@@ -85,3 +85,25 @@
   color: #cccccc;
   font-weight: 300;
 }
+
+.owner-badge {
+  background: #fff3cd;
+  color: #d48806;
+  font-size: 22rpx;
+  font-weight: 600;
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+  border: 1rpx solid #ffd666;
+}
+
+.owner-section {
+  border-left: 4rpx solid #1890ff;
+}
+
+.section-title {
+  font-size: 24rpx;
+  color: #1890ff;
+  font-weight: 600;
+  padding: 16rpx 24rpx 4rpx;
+  letter-spacing: 1rpx;
+}

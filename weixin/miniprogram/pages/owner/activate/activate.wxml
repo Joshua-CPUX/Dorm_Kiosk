@@ -1,0 +1,25 @@
+<view class="activate-page">
+  <view class="icon-area">
+    <text class="icon">🔑</text>
+    <text class="title">店主身份激活</text>
+    <text class="subtitle">输入专属激活码，成为店主后可在小程序内管理订单和商品</text>
+  </view>
+
+  <view class="form-card">
+    <view class="form-item">
+      <text class="label">激活码</text>
+      <input
+        class="input"
+        type="text"
+        placeholder="请输入激活码"
+        value="{{activationCode}}"
+        bindinput="onCodeInput"
+        maxlength="32"
+      />
+    </view>
+    <view class="submit-btn {{loading ? 'disabled' : ''}}" bindtap="onActivate">
+      <text wx:if="{{!loading}}">确认激活</text>
+      <text wx:else>激活中...</text>
+    </view>
+  </view>
+</view>

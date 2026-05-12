@@ -154,6 +154,17 @@ public class ProductServiceImpl implements IProductService {
         productMapper.updateById(product);
     }
 
+    @Override
+    public Page<Product> getAllProductPage(Integer pageNum, Integer pageSize, String keyword) {
+        Page<Product> page = new Page<>(pageNum, pageSize);
+        LambdaQueryWrapper<Product> wrapper = new LambdaQueryWrapper<>();
+        if (StringUtils.hasText(keyword)) {
+            wrapper.like(Product::getName, keyword);
+        }
+        wrapper.orderByDesc(Product::getCreateTime);
+        return productMapper.selectPage(page, wrapper);
+    }
+
     private ProductVO convertToVO(Product product) {
         ProductVO vo = new ProductVO();
         vo.setId(product.getId());
