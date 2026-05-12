@@ -5,6 +5,8 @@ Page({
     from: null,
     action: null,
     editingId: null,
+    regionArray: [],
+    regionText: '请选择省市区',
     formData: {
       consignee: '',
       phone: '',
@@ -48,6 +50,8 @@ Page({
 
   initFormData() {
     this.setData({
+      regionArray: [],
+      regionText: '请选择省市区',
       formData: {
         consignee: '',
         phone: '',
@@ -85,7 +89,9 @@ Page({
             district: address.district || '',
             detail: address.detail || '',
             isDefault: address.isDefault || 0
-          }
+          },
+          regionArray: [address.province, address.city, address.district],
+          regionText: address.province + ' ' + address.city + ' ' + address.district
         });
       }
     }).catch(err => {
@@ -101,16 +107,16 @@ Page({
     this.setData({ 'formData.phone': e.detail.value });
   },
 
-  onProvinceInput(e) {
-    this.setData({ 'formData.province': e.detail.value });
-  },
-
-  onCityInput(e) {
-    this.setData({ 'formData.city': e.detail.value });
-  },
-
-  onDistrictInput(e) {
-    this.setData({ 'formData.district': e.detail.value });
+  onRegionChange(e) {
+    const value = e.detail.value;
+    const regionText = value.join(' ');
+    this.setData({
+      regionArray: value,
+      regionText: regionText,
+      'formData.province': value[0],
+      'formData.city': value[1],
+      'formData.district': value[2]
+    });
   },
 
   onDetailInput(e) {
@@ -135,16 +141,13 @@ Page({
       wx.showToast({ title: '请输入手机号', icon: 'none' });
       return;
     }
+    const phoneReg = /^1[3-9]\d{9}$/;
+    if (!phoneReg.test(formData.phone)) {
+      wx.showToast({ title: '请输入正确的手机号', icon: 'none' });
+      return;
+    }
     if (!formData.province || !formData.province.trim()) {
-      wx.showToast({ title: '请输入省份', icon: 'none' });
-      return;
-    }
-    if (!formData.city || !formData.city.trim()) {
-      wx.showToast({ title: '请输入城市', icon: 'none' });
-      return;
-    }
-    if (!formData.district || !formData.district.trim()) {
-      wx.showToast({ title: '请输入区县', icon: 'none' });
+      wx.showToast({ title: '请选择省市区', icon: 'none' });
       return;
     }
     if (!formData.detail || !formData.detail.trim()) {

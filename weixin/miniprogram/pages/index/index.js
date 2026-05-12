@@ -1,3 +1,5 @@
+const imageUtil = require('../../utils/image.js');
+
 Page({
   data: {
     categories: [],
@@ -26,9 +28,19 @@ Page({
       api.getCategoryList(),
       api.getHotProducts(10)
     ]).then(([categoryRes, productRes]) => {
+      // 处理分类图片
+      const categories = (categoryRes.data || []).map(item => ({
+        ...item,
+        icon: imageUtil.getImageUrl(item.icon)
+      }));
+      // 处理商品图片
+      const hotProducts = (productRes.data || []).map(item => ({
+        ...item,
+        image: imageUtil.getImageUrl(item.image)
+      }));
       this.setData({
-        categories: categoryRes.data || [],
-        hotProducts: productRes.data || []
+        categories: categories,
+        hotProducts: hotProducts
       });
     }).catch(err => {
       console.error('加载数据失败', err);

@@ -1,3 +1,5 @@
+const imageUtil = require('../../utils/image.js');
+
 Page({
   data: {
     cartList: [],
@@ -20,10 +22,12 @@ Page({
     const api = require('../../api/index.js');
     const effectiveUserId = userId || this.data.userId;
     api.getCartList(effectiveUserId).then(res => {
-      const cartList = res.data || [];
-      cartList.forEach(item => {
-        item.selected = this.data.selectedIds.includes(item.cartId);
-      });
+      // 处理商品图片
+      const cartList = (res.data || []).map(item => ({
+        ...item,
+        image: imageUtil.getImageUrl(item.image),
+        selected: this.data.selectedIds.includes(item.cartId)
+      }));
       this.setData({ cartList });
       this.calculateTotal();
     }).catch(err => {

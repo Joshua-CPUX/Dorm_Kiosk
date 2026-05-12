@@ -14,6 +14,6 @@ import org.zhangrui.model.entity.Cart;
 @Mapper
 public interface CartMapper extends BaseMapper<Cart> {
 
-    @Select("SELECT * FROM oms_cart WHERE user_id = #{userId} AND product_id = #{productId} AND deleted = 1 LIMIT 1")
+    @Select("SELECT * FROM oms_cart WHERE user_id = #{userId} AND product_id = #{productId} LIMIT 1")
     Cart selectByUserIdAndProductIdIncludingDeleted(Long userId, Long productId);
 }

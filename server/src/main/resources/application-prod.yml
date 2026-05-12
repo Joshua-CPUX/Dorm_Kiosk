@@ -27,3 +27,6 @@ springdoc:
     enabled: false
   api-docs:
     enabled: false
+
+owner:
+  activation-code: SHOP2026SECRET

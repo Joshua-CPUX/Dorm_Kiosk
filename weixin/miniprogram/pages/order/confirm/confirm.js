@@ -87,47 +87,35 @@ Page({
       return;
     }
 
-    const doCreateOrder = (cartIds) => {
-      const orderData = {
-        cartIds: cartIds,
+    let orderData;
+    if (this.data.cartIds && this.data.cartIds.length > 0) {
+      orderData = {
+        cartIds: this.data.cartIds,
         orderType: this.data.orderType,
         addressId: this.data.address.id,
         remark: this.data.remark
       };
-
-      api.createOrder(this.data.userId, orderData).then(res => {
-        wx.showToast({ title: '下单成功', icon: 'success' });
-        wx.redirectTo({
-          url: `/pages/order/detail/detail?id=${res.data}`
-        });
-      }).catch(err => {
-        console.error('下单失败', err);
-        wx.showToast({ title: '下单失败', icon: 'none' });
-      });
-    };
-
-    if (this.data.cartIds && this.data.cartIds.length > 0) {
-      doCreateOrder(this.data.cartIds);
     } else if (this.data.productId) {
-      api.addCart(this.data.userId, {
+      orderData = {
         productId: this.data.productId,
-        quantity: this.data.quantity
-      }).then(() => {
-        return api.getCartList(this.data.userId);
-      }).then(res => {
-        const cartList = res.data || [];
-        const addedItem = cartList.find(item => item.productId === this.data.productId);
-        if (addedItem) {
-          doCreateOrder([addedItem.cartId]);
-        } else {
-          wx.showToast({ title: '请先添加商品到购物车', icon: 'none' });
-        }
-      }).catch(err => {
-        console.error('处理订单失败', err);
-        wx.showToast({ title: '处理订单失败', icon: 'none' });
-      });
+        quantity: this.data.quantity,
+        orderType: this.data.orderType,
+        addressId: this.data.address.id,
+        remark: this.data.remark
+      };
     } else {
       wx.showToast({ title: '请选择商品', icon: 'none' });
+      return;
     }
+
+    api.createOrder(this.data.userId, orderData).then(res => {
+      wx.showToast({ title: '下单成功', icon: 'success' });
+      wx.redirectTo({
+        url: `/pages/order/detail/detail?id=${res.data}`
+      });
+    }).catch(err => {
+      console.error('下单失败', err);
+      wx.showToast({ title: '下单失败', icon: 'none' });
+    });
   }
 });

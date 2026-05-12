@@ -1,3 +1,5 @@
+const imageUtil = require('../../../utils/image.js');
+
 Page({
   data: {
     categoryId: null,
@@ -6,10 +8,15 @@ Page({
     pageNum: 1,
     pageSize: 10,
     hasMore: true,
-    loading: false
+    loading: false,
+    userId: null
   },
 
   onLoad(options) {
+    const app = getApp();
+    const userId = app.globalData.userId || wx.getStorageSync('userId');
+    this.setData({ userId });
+
     if (options.categoryId) {
       this.setData({ categoryId: parseInt(options.categoryId) });
     }
@@ -17,6 +24,12 @@ Page({
       this.setData({ keyword: options.keyword });
     }
     this.loadProducts();
+  },
+
+  onShow() {
+    const app = getApp();
+    const userId = app.globalData.userId || wx.getStorageSync('userId');
+    this.setData({ userId });
   },
 
   onReachBottom() {
@@ -43,17 +56,33 @@ Page({
       categoryId: this.data.categoryId,
       keyword: this.data.keyword
     }).then(res => {
-      const products = append
-        ? [...this.data.products, ...(res.data.records || [])]
-        : (res.data.records || []);
+      // 处理商品图片
+      const rawProducts = (res.data.records || []);
+      const products = rawProducts.map(item => ({
+        ...item,
+        image: imageUtil.getImageUrl(item.image)
+      }));
+      const finalProducts = append
+        ? [...this.data.products, ...products]
+        : products;
       this.setData({
-        products,
-        hasMore: products.length < res.data.total,
+        products: finalProducts,
+        hasMore: rawProducts.length < res.data.total,
         loading: false
       });
     }).catch(err => {
       this.setData({ loading: false });
     });
+  },
+
+  onSearch(e) {
+    this.setData({ keyword: e.detail.value, pageNum: 1, products: [], hasMore: true });
+    this.loadProducts();
+  },
+
+  onClearSearch() {
+    this.setData({ keyword: '', pageNum: 1, products: [], hasMore: true });
+    this.loadProducts();
   },
 
   goToDetail(e) {
@@ -63,8 +92,20 @@ Page({
     });
   },
 
-  onSearch(e) {
-    this.setData({ keyword: e.detail.value, pageNum: 1, products: [], hasMore: true });
-    this.loadProducts();
+  addToCart(e) {
+    const { id, index } = e.currentTarget.dataset;
+    if (!this.data.userId) {
+      wx.showToast({ title: '请先登录', icon: 'none' });
+      return;
+    }
+    const api = require('../../../api/index.js');
+    api.addCart(this.data.userId, { productId: id, quantity: 1 }).then(() => {
+      wx.showToast({ title: '已加入购物车', icon: 'success' });
+      const products = this.data.products;
+      products[index].cartCount = (products[index].cartCount || 0) + 1;
+      this.setData({ products });
+    }).catch(err => {
+      wx.showToast({ title: '添加失败', icon: 'none' });
+    });
   }
 });

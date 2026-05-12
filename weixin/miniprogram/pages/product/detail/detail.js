@@ -1,3 +1,5 @@
+const imageUtil = require('../../../utils/image.js');
+
 Page({
   data: {
     id: null,
@@ -18,7 +20,11 @@ Page({
   loadProductDetail() {
     const api = require('../../../api/index.js');
     api.getProductDetail(this.data.id).then(res => {
-      this.setData({ product: res.data });
+      const product = {
+        ...res.data,
+        image: imageUtil.getImageUrl(res.data.image)
+      };
+      this.setData({ product });
     }).catch(err => {
       console.error('加载商品详情失败', err);
     });

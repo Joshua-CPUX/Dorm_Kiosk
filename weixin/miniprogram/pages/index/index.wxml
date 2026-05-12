@@ -20,7 +20,13 @@
         bindtap="goToCategory"
       >
         <view class="category-icon">
-          <text class="icon">{{item.icon || '📦'}}</text>
+          <image 
+            wx:if="{{item.icon && (item.icon.indexOf('http') === 0 || item.icon.indexOf('/') === 0)}}"
+            src="{{item.icon}}" 
+            mode="aspectFit" 
+            class="category-image"
+          />
+          <text wx:else class="icon">{{item.icon || '📦'}}</text>
         </view>
         <text class="category-name">{{item.name}}</text>
       </view>
@@ -37,7 +43,8 @@
         data-id="{{item.id}}"
         bindtap="goToProduct"
       >
-        <image src="{{item.image}}" mode="aspectFill" class="product-image" />
+        <image wx:if="{{item.image}}" src="{{item.image}}" mode="aspectFill" class="product-image" />
+        <view wx:else class="product-image-placeholder"></view>
         <view class="product-info">
           <text class="product-name">{{item.name}}</text>
           <text class="product-subtitle">{{item.subtitle}}</text>

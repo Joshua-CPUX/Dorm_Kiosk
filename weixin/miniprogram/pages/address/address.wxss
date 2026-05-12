@@ -38,6 +38,29 @@
   text-align: right;
 }
 
+.form-item .picker {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.form-item .picker .text {
+  font-size: 28rpx;
+  color: #333333;
+}
+
+.form-item .picker .placeholder {
+  font-size: 28rpx;
+  color: #999999;
+}
+
+.form-item .picker .arrow {
+  font-size: 28rpx;
+  color: #999999;
+  margin-left: 8rpx;
+}
+
 .form-actions {
   display: flex;
   gap: 24rpx;

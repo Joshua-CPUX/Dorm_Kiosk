@@ -48,17 +48,42 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     @Transactional
     public Long createOrder(Long userId, OrderCreateDTO dto) {
-        List<CartProductVO> cartProducts = cartService.getCartList(userId);
-        if (cartProducts.isEmpty()) {
-            throw new BusinessException("购物车为空");
-        }
+        List<CartProductVO> selectedProducts = new ArrayList<>();
+        List<Long> cartIdsToClear = new ArrayList<>();
 
-        List<CartProductVO> selectedProducts = cartProducts.stream()
-                .filter(cp -> dto.getCartIds().contains(cp.getCartId()))
-                .collect(Collectors.toList());
+        if (dto.getProductId() != null && dto.getQuantity() != null) {
+            Product product = productMapper.selectById(dto.getProductId());
+            if (product == null) {
+                throw new BusinessException("商品不存在");
+            }
+            if (product.getStock() < dto.getQuantity()) {
+                throw new BusinessException("商品库存不足");
+            }
+            CartProductVO cartProductVO = new CartProductVO();
+            cartProductVO.setProductId(product.getId());
+            cartProductVO.setName(product.getName());
+            cartProductVO.setImage(product.getImage());
+            cartProductVO.setPrice(product.getPrice());
+            cartProductVO.setQuantity(dto.getQuantity());
+            cartProductVO.setSubtotal(product.getPrice().multiply(new java.math.BigDecimal(dto.getQuantity())));
+            selectedProducts.add(cartProductVO);
+        } else if (dto.getCartIds() != null && !dto.getCartIds().isEmpty()) {
+            List<CartProductVO> cartProducts = cartService.getCartList(userId);
+            if (cartProducts.isEmpty()) {
+                throw new BusinessException("购物车为空");
+            }
 
-        if (selectedProducts.isEmpty()) {
-            throw new BusinessException("请选择要结算的商品");
+            selectedProducts = cartProducts.stream()
+                    .filter(cp -> dto.getCartIds().contains(cp.getCartId()))
+                    .collect(Collectors.toList());
+
+            if (selectedProducts.isEmpty()) {
+                throw new BusinessException("请选择要结算的商品");
+            }
+
+            cartIdsToClear.addAll(dto.getCartIds());
+        } else {
+            throw new BusinessException("请选择商品");
         }
 
         for (CartProductVO product : selectedProducts) {
@@ -103,7 +128,9 @@ public class OrderServiceImpl implements IOrderService {
             productService.updateStock(cp.getProductId(), -cp.getQuantity());
         }
 
-        cartService.clearCart(userId, dto.getCartIds());
+        if (!cartIdsToClear.isEmpty()) {
+            cartService.clearCart(userId, cartIdsToClear);
+        }
 
         return order.getId();
     }

@@ -32,7 +32,7 @@
           <template #default="{ row }">
             <el-image
               v-if="row.image"
-              :src="row.image"
+              :src="getImageUrl(row.image)"
               style="width: 60px; height: 60px;"
               fit="cover"
             />
@@ -118,7 +118,28 @@
           <el-input-number v-model="productForm.stock" :min="0" style="width: 100%;" />
         </el-form-item>
         <el-form-item label="商品图片">
-          <el-input v-model="productForm.image" placeholder="请输入图片URL" />
+          <div class="upload-container">
+            <el-upload
+              class="avatar-uploader"
+              :show-file-list="false"
+              :before-upload="beforeUpload"
+              :http-request="customUpload"
+              :limit="1"
+            >
+              <el-image v-if="productForm.image" :src="getImageUrl(productForm.image)" class="avatar" fit="cover" />
+              <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+            </el-upload>
+            <div class="upload-tip">
+              <div>点击上传商品图片</div>
+              <div style="margin-top: 8px;">
+                <el-input
+                  v-model="productForm.image"
+                  placeholder="或输入图片URL"
+                  style="width: 200px;"
+                />
+              </div>
+            </div>
+          </div>
         </el-form-item>
         <el-form-item label="商品描述">
           <el-input v-model="productForm.description" type="textarea" :rows="3" placeholder="请输入商品描述" />
@@ -135,14 +156,17 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
+import { Plus } from '@element-plus/icons-vue';
 import {
   getProductList,
   addProduct,
   updateProduct,
   deleteProduct,
   updateProductStatus,
-  getCategoryList
+  getCategoryList,
+  uploadFile
 } from '../../api/admin';
+import { getImageUrl } from '../../utils/image';
 
 const productList = ref([]);
 const categoryList = ref([]);
@@ -295,6 +319,39 @@ const resetForm = () => {
   formRef.value?.resetFields();
 };
 
+const beforeUpload = (file) => {
+  const isImage = file.type.startsWith('image/');
+  const isLt10M = file.size / 1024 / 1024 < 10;
+  if (!isImage) {
+    ElMessage.error('只能上传图片文件!');
+    return false;
+  }
+  if (!isLt10M) {
+    ElMessage.error('图片大小不能超过 10MB!');
+    return false;
+  }
+  return true;
+};
+
+const customUpload = async (options) => {
+  const { file, onSuccess, onError } = options;
+  try {
+    const res = await uploadFile(file);
+    if (res.code === 200 || res.code === 0) {
+      productForm.image = res.data?.url || res.data;
+      ElMessage.success('上传成功');
+      onSuccess?.();
+    } else {
+      ElMessage.error(res.msg || '上传失败');
+      onError?.(new Error(res.msg || '上传失败'));
+    }
+  } catch (error) {
+    console.error(error);
+    ElMessage.error('上传失败');
+    onError?.(error);
+  }
+};
+
 onMounted(() => {
   loadData();
 });
@@ -314,5 +371,46 @@ onMounted(() => {
 .search-bar {
   display: flex;
   align-items: center;
+}
+
+.upload-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.avatar-uploader {
+  border: 1px dashed var(--el-border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--el-transition-duration-fast);
+  width: 150px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.avatar-uploader:hover {
+  border-color: var(--el-color-primary);
+}
+
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+}
+
+.avatar {
+  width: 150px;
+  height: 150px;
+  display: block;
+}
+
+.upload-tip {
+  color: #909399;
+  font-size: 12px;
 }
 </style>

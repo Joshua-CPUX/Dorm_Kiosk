@@ -25,7 +25,7 @@
         <el-table-column prop="phone" label="手机号" width="140" />
         <el-table-column label="角色" width="100">
           <template #default="{ row }">
-            <el-tag :type="row.role === 1 ? 'warning' : ''">
+            <el-tag :type="row.role === 1 ? 'warning' : 'info'">
               {{ row.role === 1 ? '店主' : '普通用户' }}
             </el-tag>
           </template>

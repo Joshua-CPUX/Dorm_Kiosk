@@ -40,17 +40,24 @@ function request(options) {
       method: options.method || 'GET',
       data: cleanParams(options.data),
       header: header,
+      timeout: 10000, // 10秒超时
       success: function(res) {
         if (res.data && res.data.code === 200) {
           resolve(res.data);
         } else {
           var msg = (res.data && res.data.message) || '请求失败';
-          wx.showToast({ title: msg, icon: 'none', duration: 2500 });
+          // 购物车页面失败不显示toast，避免干扰
+          if (!options.silent) {
+            wx.showToast({ title: msg, icon: 'none', duration: 2500 });
+          }
           reject(res.data);
         }
       },
       fail: function(err) {
-        wx.showToast({ title: '网络错误，请检查网络连接', icon: 'none', duration: 2500 });
+        // 购物车页面失败不显示toast，避免干扰
+        if (!options.silent) {
+          wx.showToast({ title: '网络错误，请检查网络连接', icon: 'none', duration: 2500 });
+        }
         reject(err);
       }
     });
@@ -61,5 +68,6 @@ module.exports = {
   get: function(url, params, query) { return request({ url: url, method: 'GET', data: params, query: query }); },
   post: function(url, data, query) { return request({ url: url, method: 'POST', data: data, query: query }); },
   put: function(url, data, query) { return request({ url: url, method: 'PUT', data: data, query: query }); },
-  del: function(url, params, query) { return request({ url: url, method: 'DELETE', data: params, query: query }); }
+  del: function(url, params, query) { return request({ url: url, method: 'DELETE', data: params, query: query }); },
+  request: request
 };

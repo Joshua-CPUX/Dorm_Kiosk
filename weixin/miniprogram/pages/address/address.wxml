@@ -9,16 +9,13 @@
       <input class="input" type="number" placeholder="请输入手机号" value="{{formData.phone}}" bindinput="onPhoneInput" />
     </view>
     <view class="form-item">
-      <text class="label">省份</text>
-      <input class="input" placeholder="请输入省份" value="{{formData.province}}" bindinput="onProvinceInput" />
-    </view>
-    <view class="form-item">
-      <text class="label">城市</text>
-      <input class="input" placeholder="请输入城市" value="{{formData.city}}" bindinput="onCityInput" />
-    </view>
-    <view class="form-item">
-      <text class="label">区县</text>
-      <input class="input" placeholder="请输入区县" value="{{formData.district}}" bindinput="onDistrictInput" />
+      <text class="label">省市区</text>
+      <picker mode="region" bindchange="onRegionChange" value="{{regionArray}}">
+        <view class="picker">
+          <text class="{{formData.province ? 'text' : 'placeholder'}}">{{regionText}}</text>
+          <text class="arrow">></text>
+        </view>
+      </picker>
     </view>
     <view class="form-item">
       <text class="label">详细地址</text>

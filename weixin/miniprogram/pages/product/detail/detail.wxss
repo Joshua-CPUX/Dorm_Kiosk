@@ -19,6 +19,13 @@
   display: block;
 }
 
+.detail-image-placeholder {
+  width: 100%;
+  height: 560rpx;
+  display: block;
+  background: #f0f0f0;
+}
+
 /* 商品信息卡片 */
 .detail-info {
   background: #ffffff;

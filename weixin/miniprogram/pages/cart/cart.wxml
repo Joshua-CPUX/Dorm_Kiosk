@@ -4,7 +4,8 @@
       <view class="item-select" data-id="{{item.cartId}}" bindtap="onSelectItem">
         <view class="checkbox {{item.selected ? 'checked' : ''}}"></view>
       </view>
-      <image src="{{item.image}}" mode="aspectFill" class="item-image" />
+      <image wx:if="{{item.image}}" src="{{item.image}}" mode="aspectFill" class="item-image" />
+      <view wx:else class="item-image-placeholder"></view>
       <view class="item-info">
         <text class="item-name">{{item.name}}</text>
         <view class="item-bottom">

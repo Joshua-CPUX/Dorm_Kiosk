@@ -1,9 +1,9 @@
 -- 校园小卖部 测试/开发环境数据库脚本（含示例数据）
 -- 生产环境请使用 schema-prod.sql
 -- 创建数据库
-CREATE DATABASE IF NOT EXISTS dorm_kiosk_dev DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS dorm_kiosk DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-USE dorm_kiosk_dev;
+USE dorm_kiosk;
 
 -- 用户表
 DROP TABLE IF EXISTS `sys_user`;

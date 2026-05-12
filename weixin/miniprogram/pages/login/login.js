@@ -91,6 +91,13 @@ Page({
       wx.showToast({ title: '密码长度不能少于6位', icon: 'none' });
       return;
     }
+    if (mode === 'register' && phone) {
+      const phoneReg = /^1[3-9]\d{9}$/;
+      if (!phoneReg.test(phone)) {
+        wx.showToast({ title: '请输入正确的手机号', icon: 'none' });
+        return;
+      }
+    }
 
     this.setData({ loading: true });
 

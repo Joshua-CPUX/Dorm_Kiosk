@@ -1,11 +1,18 @@
 <view class="product-list">
   <view class="search-bar">
-    <input
-      type="text"
-      placeholder="搜索商品"
-      value="{{keyword}}"
-      bindconfirm="onSearch"
-    />
+    <view class="search-wrapper">
+      <image class="search-icon" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIxIDIxTDE2LjY1IDE2LjY1TTE5IDEwLjVDMTkgMTUuMTk0NCAxNS4xOTQ0IDE5IDEwLjUgMTlDNS44MDU1OCAxOSAyIDE1LjE5NDQgMiAxMC41QzIgNS44MDU1OCA1LjgwNTU4IDIgMTAuNSAyQzE1LjE5NDQgMiAxOSA1LjgwNTU4IDE5IDEwLjVaIiBzdHJva2U9IiM5OTk5OTkiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPg==" />
+      <input
+        class="search-input"
+        type="text"
+        placeholder="搜索商品"
+        value="{{keyword}}"
+        bindconfirm="onSearch"
+      />
+      <view wx:if="{{keyword}}" class="clear-btn" bindtap="onClearSearch">
+        <image class="clear-icon" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE4IDZMMCAxOE02IDZMMjIgMTgiIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+" />
+      </view>
+    </view>
   </view>
 
   <view class="product-grid">
@@ -16,13 +23,22 @@
       data-id="{{item.id}}"
       bindtap="goToDetail"
     >
-      <image src="{{item.image}}" mode="aspectFill" class="product-image" />
+      <view class="image-wrapper">
+        <image wx:if="{{item.image}}" src="{{item.image}}" mode="aspectFill" class="product-image" />
+        <view wx:else class="product-image-placeholder"></view>
+        <view class="add-btn-small" data-id="{{item.id}}" data-index="{{index}}" catchtap="addToCart" wx:if="{{item.stock > 0}}">
+          <text class="add-text">+</text>
+        </view>
+        <view class="out-of-stock" wx:if="{{item.stock <= 0}}">已售罄</view>
+      </view>
       <view class="product-info">
         <text class="product-name">{{item.name}}</text>
         <text class="product-subtitle">{{item.subtitle}}</text>
         <view class="product-bottom">
-          <text class="product-price">¥{{item.price}}</text>
-          <text class="product-sales">已售{{item.sales}}</text>
+          <view class="price-section">
+            <text class="product-price">¥{{item.price}}</text>
+            <text class="product-sales">已售{{item.sales || 0}}</text>
+          </view>
         </view>
       </view>
     </view>

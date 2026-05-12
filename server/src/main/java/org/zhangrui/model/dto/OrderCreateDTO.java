@@ -1,7 +1,5 @@
 package org.zhangrui.model.dto;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -16,10 +14,12 @@ import java.util.List;
 @Data
 public class OrderCreateDTO implements Serializable {
 
-    @NotEmpty(message = "购物车ID列表不能为空")
     private List<Long> cartIds;
 
-    @NotNull(message = "订单类型不能为空")
+    private Long productId;
+
+    private Integer quantity;
+
     private Integer orderType;
 
     private Long addressId;

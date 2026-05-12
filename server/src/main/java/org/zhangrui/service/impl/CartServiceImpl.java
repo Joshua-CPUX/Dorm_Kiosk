@@ -61,31 +61,28 @@ public class CartServiceImpl implements ICartService {
             throw new BusinessException("库存不足");
         }
 
-        LambdaQueryWrapper<Cart> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Cart::getUserId, userId);
-        wrapper.eq(Cart::getProductId, productId);
-        Cart existCart = cartMapper.selectOne(wrapper);
+        // 1. 先查找是否有记录（包括已删除的）
+        Cart existCart = cartMapper.selectByUserIdAndProductIdIncludingDeleted(userId, productId);
 
         if (existCart != null) {
-            existCart.setQuantity(existCart.getQuantity() + quantity);
+            // 如果记录存在
+            if (existCart.getDeleted() == 1) {
+                // 如果是已删除的，恢复它并设置数量
+                existCart.setDeleted(0);
+                existCart.setQuantity(quantity);
+            } else {
+                // 如果是正常记录，累加数量
+                existCart.setQuantity(existCart.getQuantity() + quantity);
+            }
             cartMapper.updateById(existCart);
         } else {
+            // 没有记录，新增
             Cart cart = new Cart();
             cart.setUserId(userId);
             cart.setProductId(productId);
             cart.setQuantity(quantity);
-            try {
-                cartMapper.insert(cart);
-            } catch (Exception e) {
-                Cart deletedCart = cartMapper.selectByUserIdAndProductIdIncludingDeleted(userId, productId);
-                if (deletedCart != null) {
-                    deletedCart.setQuantity(deletedCart.getQuantity() + quantity);
-                    deletedCart.setDeleted(0);
-                    cartMapper.updateById(deletedCart);
-                } else {
-                    throw e;
-                }
-            }
+            cart.setDeleted(0);
+            cartMapper.insert(cart);
         }
     }
 

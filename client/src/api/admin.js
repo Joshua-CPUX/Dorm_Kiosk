@@ -79,3 +79,10 @@ export function getUserList(params) {
 export function updateUserStatus(id, status) {
   return request.put('/admin/user/status', null, { params: { id, status } });
 }
+
+export function uploadFile(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+  // 不手动设置 Content-Type，让浏览器自动设置（包含 boundary）
+  return request.post('/file/upload', formData);
+}
