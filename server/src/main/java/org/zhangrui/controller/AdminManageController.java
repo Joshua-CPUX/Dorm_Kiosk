@@ -112,8 +112,9 @@ public class AdminManageController {
             @RequestParam Long id,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String icon,
-            @RequestParam(required = false) Integer sort) {
-        categoryService.updateCategory(id, name, icon, sort);
+            @RequestParam(required = false) Integer sort,
+            @RequestParam(required = false) Integer status) {
+        categoryService.updateCategory(id, name, icon, sort, status);
         return Result.success();
     }
 

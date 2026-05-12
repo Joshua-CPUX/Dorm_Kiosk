@@ -12,10 +12,10 @@
           v-model="searchKeyword"
           placeholder="搜索用户名/昵称"
           style="width: 220px; margin-right: 10px;"
-          @keyup.enter="loadData"
+          @keyup.enter="handleSearch"
           clearable
         />
-        <el-button type="primary" @click="loadData">搜索</el-button>
+        <el-button type="primary" @click="handleSearch">搜索</el-button>
       </div>
 
       <el-table :data="userList" style="width: 100%; margin-top: 20px;" v-loading="loading">
@@ -106,6 +106,11 @@ const handleToggleStatus = async (row) => {
   } catch (error) {
     console.error(error);
   }
+};
+
+const handleSearch = () => {
+  pagination.pageNum = 1;
+  loadData();
 };
 
 onMounted(() => {

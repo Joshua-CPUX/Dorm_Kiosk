@@ -41,7 +41,7 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public void updateCategory(Long id, String name, String icon, Integer sort) {
+    public void updateCategory(Long id, String name, String icon, Integer sort, Integer status) {
         Category category = categoryMapper.selectById(id);
         if (category != null) {
             if (name != null) {
@@ -52,6 +52,9 @@ public class CategoryServiceImpl implements ICategoryService {
             }
             if (sort != null) {
                 category.setSort(sort);
+            }
+            if (status != null) {
+                category.setStatus(status);
             }
             categoryMapper.updateById(category);
         }

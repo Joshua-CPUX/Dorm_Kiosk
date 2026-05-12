@@ -32,12 +32,13 @@ public interface ICategoryService {
     /**
      * 更新分类
      *
-     * @param id   分类ID
-     * @param name 分类名称
-     * @param icon 图标
-     * @param sort 排序
+     * @param id     分类ID
+     * @param name   分类名称
+     * @param icon   图标
+     * @param sort   排序
+     * @param status 状态
      */
-    void updateCategory(Long id, String name, String icon, Integer sort);
+    void updateCategory(Long id, String name, String icon, Integer sort, Integer status);
 
     /**
      * 删除分类
