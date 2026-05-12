@@ -89,9 +89,10 @@ public interface IOrderService {
      * @param pageNum  页码
      * @param pageSize 每页数量
      * @param status   订单状态
+     * @param orderNo  订单号（模糊搜索）
      * @return 订单分页
      */
-    Page<OrderVO> getAdminOrderList(Integer pageNum, Integer pageSize, Integer status);
+    Page<OrderVO> getAdminOrderList(Integer pageNum, Integer pageSize, Integer status, String orderNo);
 
     /**
      * 管理端：获取订单详情

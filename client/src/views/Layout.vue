@@ -43,7 +43,7 @@
           <el-dropdown @command="handleCommand">
             <span class="user-info">
               <el-icon><User /></el-icon>
-              管理员
+              {{ adminStore.adminInfo?.username || '管理员' }}
             </span>
             <template #dropdown>
               <el-dropdown-menu>

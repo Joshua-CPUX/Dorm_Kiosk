@@ -38,12 +38,13 @@ public class AdminManageController {
      * 获取商品列表
      */
     @GetMapping("/product/list")
-    public Result<List<Product>> getProductList(
+    public Result<Page<Product>> getProductList(
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize,
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) String keyword) {
-        com.baomidou.mybatisplus.extension.plugins.pagination.Page<Product> page =
-                productService.getProductPage(1, 100, categoryId, keyword);
-        return Result.success(page.getRecords());
+        Page<Product> page = productService.getProductPage(pageNum, pageSize, categoryId, keyword);
+        return Result.success(page);
     }
 
     /**

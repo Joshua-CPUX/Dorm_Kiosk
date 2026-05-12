@@ -228,11 +228,14 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
-    public Page<OrderVO> getAdminOrderList(Integer pageNum, Integer pageSize, Integer status) {
+    public Page<OrderVO> getAdminOrderList(Integer pageNum, Integer pageSize, Integer status, String orderNo) {
         Page<Order> page = new Page<>(pageNum, pageSize);
         LambdaQueryWrapper<Order> wrapper = new LambdaQueryWrapper<>();
         if (status != null) {
             wrapper.eq(Order::getStatus, status);
+        }
+        if (orderNo != null && !orderNo.isBlank()) {
+            wrapper.like(Order::getOrderNo, orderNo);
         }
         wrapper.orderByDesc(Order::getCreateTime);
         Page<Order> orderPage = orderMapper.selectPage(page, wrapper);

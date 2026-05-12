@@ -13,7 +13,7 @@
           v-model="searchKeyword"
           placeholder="搜索商品名称"
           style="width: 200px; margin-right: 10px;"
-          @keyup.enter="loadData"
+          @keyup.enter="handleSearch"
         />
         <el-select v-model="searchCategory" placeholder="选择分类" style="width: 150px; margin-right: 10px;" clearable>
           <el-option
@@ -23,7 +23,7 @@
             :value="cat.id"
           />
         </el-select>
-        <el-button type="primary" @click="loadData">搜索</el-button>
+        <el-button type="primary" @click="handleSearch">搜索</el-button>
       </div>
 
       <el-table :data="productList" style="width: 100%; margin-top: 20px;" v-loading="loading">
@@ -199,6 +199,11 @@ const loadData = async () => {
   } finally {
     loading.value = false;
   }
+};
+
+const handleSearch = () => {
+  pagination.pageNum = 1;
+  loadData();
 };
 
 const getCategoryName = (categoryId) => {

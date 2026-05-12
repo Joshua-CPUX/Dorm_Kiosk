@@ -1,5 +1,5 @@
 <view class="index">
-  <view class="banner">
+  <view class="banner" wx:if="{{banners.length > 0}}">
     <swiper indicator-dots autoplay interval="3000" circular>
       <block wx:for="{{banners}}" wx:key="index">
         <swiper-item>

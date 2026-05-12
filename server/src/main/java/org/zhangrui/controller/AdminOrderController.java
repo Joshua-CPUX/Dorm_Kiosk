@@ -27,8 +27,9 @@ public class AdminOrderController {
     public Result<Page<OrderVO>> getOrderList(
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize,
-            @RequestParam(required = false) Integer status) {
-        Page<OrderVO> orders = orderService.getAdminOrderList(pageNum, pageSize, status);
+            @RequestParam(required = false) Integer status,
+            @RequestParam(required = false) String orderNo) {
+        Page<OrderVO> orders = orderService.getAdminOrderList(pageNum, pageSize, status, orderNo);
         return Result.success(orders);
     }
 

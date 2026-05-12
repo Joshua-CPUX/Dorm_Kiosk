@@ -2,10 +2,7 @@ Page({
   data: {
     categories: [],
     hotProducts: [],
-    banners: [
-      { image: 'https://img.yzcdn.cn/vant/cat.jpeg', url: '' },
-      { image: 'https://img.yzcdn.cn/vant/cat.jpeg', url: '' }
-    ]
+    banners: []
   },
 
   onLoad() {

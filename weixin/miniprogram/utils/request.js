@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:8080/api';
+const { baseUrl: BASE_URL } = require('../config/index.js');
 
 function cleanParams(data) {
   if (!data || typeof data !== 'object') return data;
@@ -41,7 +41,6 @@ function request(options) {
       data: cleanParams(options.data),
       header: header,
       success: function(res) {
-        console.log('[request] url=' + options.url + ' status=' + res.statusCode + ' code=' + (res.data && res.data.code));
         if (res.data && res.data.code === 200) {
           resolve(res.data);
         } else {
@@ -51,8 +50,7 @@ function request(options) {
         }
       },
       fail: function(err) {
-        console.error('[request] fail url=' + options.url, err);
-        wx.showToast({ title: '网络错误，请检查后端是否启动', icon: 'none', duration: 2500 });
+        wx.showToast({ title: '网络错误，请检查网络连接', icon: 'none', duration: 2500 });
         reject(err);
       }
     });

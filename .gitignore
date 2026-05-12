@@ -59,8 +59,6 @@ dist/
 Thumbs.db
 
 # Environment
-.env
 .env.local
 .env.*.local
 application-local.yml
-application-dev.yml

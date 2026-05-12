@@ -8,6 +8,13 @@
       </template>
 
       <div class="search-bar">
+        <el-input
+          v-model="searchOrderNo"
+          placeholder="搜索订单号"
+          style="width: 200px; margin-right: 10px;"
+          @keyup.enter="handleSearch"
+          clearable
+        />
         <el-select v-model="searchStatus" placeholder="订单状态" style="width: 150px; margin-right: 10px;" clearable>
           <el-option label="待支付" :value="1" />
           <el-option label="已支付" :value="2" />
@@ -15,7 +22,7 @@
           <el-option label="已完成" :value="4" />
           <el-option label="已取消" :value="5" />
         </el-select>
-        <el-button type="primary" @click="loadData">搜索</el-button>
+        <el-button type="primary" @click="handleSearch">搜索</el-button>
       </div>
 
       <el-table :data="orderList" style="width: 100%; margin-top: 20px;" v-loading="loading">
@@ -125,6 +132,7 @@ import { getOrderList, getOrderDetail, updateOrderStatus } from '../../api/admin
 
 const orderList = ref([]);
 const loading = ref(false);
+const searchOrderNo = ref('');
 const searchStatus = ref(null);
 const detailVisible = ref(false);
 const currentOrder = ref(null);
@@ -137,6 +145,11 @@ const pagination = reactive({
 
 const statusMap = { 1: '待支付', 2: '已支付', 3: '配送中', 4: '已完成', 5: '已取消' };
 
+const handleSearch = () => {
+  pagination.pageNum = 1;
+  loadData();
+};
+
 const getStatusType = (status) => {
   const types = { 1: 'warning', 2: '', 3: 'primary', 4: 'success', 5: 'info' };
   return types[status] || '';
@@ -148,7 +161,8 @@ const loadData = async () => {
     const res = await getOrderList({
       pageNum: pagination.pageNum,
       pageSize: pagination.pageSize,
-      status: searchStatus.value
+      status: searchStatus.value || undefined,
+      orderNo: searchOrderNo.value || undefined
     });
     orderList.value = res.data?.records || [];
     pagination.total = res.data?.total || 0;

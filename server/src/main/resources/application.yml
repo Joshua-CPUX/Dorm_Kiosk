@@ -4,29 +4,12 @@ server:
     context-path: /
 
 spring:
+  profiles:
+    active: dev
   application:
     name: dorm-kiosk-server
   main:
     allow-bean-definition-overriding: true
-
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/dorm_kiosk?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:your_password}
-
-  data:
-    redis:
-      host: localhost
-      port: 6379
-      database: 0
-      timeout: 3000ms
-      lettuce:
-        pool:
-          max-active: 8
-          max-idle: 8
-          min-idle: 0
-          max-wait: -1ms
 
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -45,7 +28,6 @@ mybatis-plus:
       logic-not-delete-value: 0
   configuration:
     map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 jwt:
   secret: dormKioskSecretKey2024VeryLongAndSecureKeyForJWTTokenGeneration
@@ -63,15 +45,3 @@ wechat:
 
 owner:
   activation-code: SHOP2024SECRET
-
-springdoc:
-  api-docs:
-    path: /api-docs
-  swagger-ui:
-    path: /swagger-ui.html
-    enabled: true
-
-logging:
-  level:
-    org.zhangrui: DEBUG
-    org.springframework.security: DEBUG

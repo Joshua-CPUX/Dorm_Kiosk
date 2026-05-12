@@ -32,7 +32,7 @@ public class OwnerController {
             @RequestParam(defaultValue = "10") Integer pageSize,
             @RequestParam(required = false) Integer status) {
         userService.validateOwner(userId);
-        Page<OrderVO> orders = orderService.getAdminOrderList(pageNum, pageSize, status);
+        Page<OrderVO> orders = orderService.getAdminOrderList(pageNum, pageSize, status, null);
         return Result.success(orders);
     }
 
