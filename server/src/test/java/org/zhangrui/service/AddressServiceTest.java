@@ -4,8 +4,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.zhangrui.common.exception.BusinessException;
-import org.zhangrui.model.dto.AddressAddDTO;
-import org.zhangrui.model.dto.AddressUpdateDTO;
+import org.zhangrui.model.dto.AddressDTO;
 import org.zhangrui.model.vo.AddressVO;
 
 import java.util.List;
@@ -29,9 +28,8 @@ public class AddressServiceTest {
     @Order(1)
     @DisplayName("测试添加地址")
     public void testAddAddress() {
-        AddressAddDTO dto = new AddressAddDTO();
-        dto.setUserId(1L);
-        dto.setName("测试收货人");
+        AddressDTO dto = new AddressDTO();
+        dto.setConsignee("测试收货人");
         dto.setPhone("13800138000");
         dto.setProvince("广东省");
         dto.setCity("深圳市");
@@ -39,7 +37,7 @@ public class AddressServiceTest {
         dto.setDetail("科技园路88号");
         dto.setIsDefault(0);
 
-        Long addressId = addressService.addAddress(dto);
+        Long addressId = addressService.addAddress(1L, dto);
 
         assertNotNull(addressId);
         assertTrue(addressId > 0);
@@ -58,15 +56,10 @@ public class AddressServiceTest {
 
     @Test
     @Order(3)
-    @DisplayName("测试获取地址详情")
-    public void testGetAddressById() {
-        if (createdAddressId != null) {
-            AddressVO address = addressService.getAddressById(1L, createdAddressId);
-            assertNotNull(address);
-            assertEquals(createdAddressId, address.getId());
-        } else {
-            assertThrows(BusinessException.class, () -> addressService.getAddressById(1L, 99999L));
-        }
+    @DisplayName("测试获取默认地址")
+    public void testGetDefaultAddress() {
+        AddressVO defaultAddress = addressService.getDefaultAddress(1L);
+        assertNotNull(defaultAddress);
     }
 
     @Test
@@ -74,12 +67,13 @@ public class AddressServiceTest {
     @DisplayName("测试更新地址")
     public void testUpdateAddress() {
         if (createdAddressId != null) {
-            AddressUpdateDTO dto = new AddressUpdateDTO();
-            dto.setName("更新后的收货人");
+            AddressDTO dto = new AddressDTO();
+            dto.setId(createdAddressId);
+            dto.setConsignee("更新后的收货人");
             dto.setPhone("13900139000");
             dto.setDetail("更新后的地址");
 
-            assertDoesNotThrow(() -> addressService.updateAddress(1L, createdAddressId, dto));
+            assertDoesNotThrow(() -> addressService.updateAddress(1L, dto));
         }
     }
 
@@ -87,10 +81,13 @@ public class AddressServiceTest {
     @Order(5)
     @DisplayName("测试更新地址（不存在）")
     public void testUpdateAddressNotFound() {
-        AddressUpdateDTO dto = new AddressUpdateDTO();
-        dto.setName("测试");
+        AddressDTO dto = new AddressDTO();
+        dto.setId(99999L);
+        dto.setConsignee("测试");
+        dto.setPhone("13800000000");
+        dto.setDetail("测试地址");
 
-        assertThrows(BusinessException.class, () -> addressService.updateAddress(1L, 99999L, dto));
+        assertThrows(BusinessException.class, () -> addressService.updateAddress(1L, dto));
     }
 
     @Test
