@@ -30,15 +30,13 @@ public class UserServiceImpl implements IUserService {
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
     private final RestTemplate restTemplate;
+    private final IActivationCodeService activationCodeService;
 
     @Value("${wechat.appid}")
     private String appid;
 
     @Value("${wechat.appsecret}")
     private String appsecret;
-
-    @Value("${owner.activation-code}")
-    private String ownerActivationCode;
 
     @Override
     public UserVO login(UserLoginDTO dto) {
@@ -134,8 +132,9 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public void activateOwner(Long userId, String activationCode) {
-        if (!ownerActivationCode.equals(activationCode)) {
-            throw new BusinessException("激活码错误");
+        boolean valid = activationCodeService.validateAndUse(activationCode);
+        if (!valid) {
+            throw new BusinessException("激活码无效或已使用");
         }
         User user = userMapper.selectById(userId);
         if (user == null) {
