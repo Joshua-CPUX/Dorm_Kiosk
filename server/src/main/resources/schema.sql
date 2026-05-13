@@ -68,6 +68,7 @@ CREATE TABLE `pms_product` (
   `images` TEXT COMMENT '图片列表JSON',
   `description` TEXT COMMENT '商品描述',
   `status` TINYINT DEFAULT 1 COMMENT '状态 0-下架 1-上架',
+  `version` INT DEFAULT 0 COMMENT '版本号（乐观锁）',
   `deleted` TINYINT DEFAULT 0 COMMENT '删除标记 0-未删除 1-已删除',
   `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -116,7 +117,7 @@ CREATE TABLE `oms_order` (
   `total_amount` DECIMAL(10,2) NOT NULL COMMENT '订单总额',
   `pay_amount` DECIMAL(10,2) NOT NULL COMMENT '实付金额',
   `freight` DECIMAL(10,2) DEFAULT 0 COMMENT '运费',
-  `pay_type` TINYINT COMMENT '支付方式 1-微信支付',
+  `pay_type` TINYINT COMMENT '支付方式 1-微信支付 2-支付宝 3-余额支付',
   `pay_time` DATETIME COMMENT '支付时间',
   `pay_status` TINYINT DEFAULT 0 COMMENT '支付状态 0-未支付 1-已支付',
   `order_type` TINYINT NOT NULL COMMENT '订单类型 1-自取 2-配送',
@@ -150,7 +151,23 @@ CREATE TABLE `oms_order_item` (
   KEY `idx_order_id` (`order_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单商品明细表';
 
--- 管理员表初始化数据
+-- 店主激活码表
+DROP TABLE IF EXISTS `sys_activation_code`;
+CREATE TABLE `sys_activation_code` (
+  `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '激活码ID',
+  `code` VARCHAR(64) NOT NULL COMMENT '激活码',
+  `is_used` TINYINT DEFAULT 0 COMMENT '是否已使用 0-未使用 1-已使用',
+  `user_id` BIGINT COMMENT '使用用户ID',
+  `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `use_time` DATETIME COMMENT '使用时间',
+  UNIQUE KEY `uk_code` (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='店主激活码表';
+
+-- ==========================================
+-- 初始化数据
+-- ==========================================
+
+-- 管理员初始化数据 (密码: admin123)
 INSERT INTO `sys_admin` (`username`, `password`, `nickname`) VALUES
 ('admin', '$2a$10$slYQmyNdGzTn7ZLBXBChFOC9f6kFjAqPhccnP6DxlWXx2lPk1C3G6', '管理员');
 
@@ -162,26 +179,67 @@ INSERT INTO `pms_category` (`name`, `icon`, `sort`) VALUES
 ('日用品', '/icons/daily.png', 4),
 ('文具', '/icons/stationery.png', 5);
 
--- 商品初始化数据
+-- 商品初始化数据 (version 默认 0)
 INSERT INTO `pms_product` (`category_id`, `name`, `subtitle`, `price`, `original_price`, `stock`, `sales`, `image`, `description`) VALUES
 -- 零食类
 (1, '奥利奥饼干', '经典原味夹心饼干', 9.90, 12.90, 100, 50, 'https://img.yzcdn.cn/vant/cat.jpeg', '美味的奥利奥夹心饼干，甜而不腻'),
 (1, '薯片组合', '多种口味可选', 15.80, 19.90, 80, 35, 'https://img.yzcdn.cn/vant/cat.jpeg', '酥脆薯片，追剧必备零食'),
 (1, '巧克力派', '12枚装', 24.90, 29.90, 60, 28, 'https://img.yzcdn.cn/vant/cat.jpeg', '浓郁巧克力味的小蛋糕'),
+(1, '辣条组合', '怀旧经典', 8.80, 12.00, 150, 88, 'https://img.yzcdn.cn/vant/cat.jpeg', '童年回忆，辣条大礼包'),
+(1, '饼干礼盒', '混合口味装', 35.00, 45.00, 40, 15, 'https://img.yzcdn.cn/vant/cat.jpeg', '精美礼盒装，送礼佳品'),
 -- 饮料类
 (2, '农夫山泉', '550ml装', 2.00, 2.50, 200, 120, 'https://img.yzcdn.cn/vant/cat.jpeg', '天然矿泉水'),
 (2, '可口可乐', '330ml罐装', 3.50, 4.00, 150, 80, 'https://img.yzcdn.cn/vant/cat.jpeg', '经典碳酸饮料'),
 (2, '冰红茶', '500ml瓶装', 4.50, 5.00, 100, 45, 'https://img.yzcdn.cn/vant/cat.jpeg', '柠檬味茶饮料'),
 (2, '纯牛奶', '250ml盒装', 5.00, 6.00, 80, 30, 'https://img.yzcdn.cn/vant/cat.jpeg', '优质纯牛奶，营养健康'),
+(2, '果汁饮料', '橙汁 500ml', 6.50, 8.00, 60, 25, 'https://img.yzcdn.cn/vant/cat.jpeg', '鲜榨橙汁，富含维生素C'),
 -- 方便食品类
 (3, '康师傅方便面', '红烧牛肉味', 4.50, 5.00, 100, 60, 'https://img.yzcdn.cn/vant/cat.jpeg', '经典口味方便面'),
 (3, '自热米饭', '宫保鸡丁味', 15.00, 18.00, 50, 20, 'https://img.yzcdn.cn/vant/cat.jpeg', '即食自热米饭，方便快捷'),
 (3, '八宝粥', '易拉罐装', 4.00, 5.00, 70, 25, 'https://img.yzcdn.cn/vant/cat.jpeg', '营养八宝粥，早餐好选择'),
+(3, '酸辣粉', '桶装', 6.80, 8.00, 90, 42, 'https://img.yzcdn.cn/vant/cat.jpeg', '地道酸辣粉，麻辣鲜香'),
+(3, '面包蛋糕', '吐司 4片装', 8.00, 10.00, 60, 35, 'https://img.yzcdn.cn/vant/cat.jpeg', '新鲜烘焙，松软可口'),
 -- 日用品类
 (4, '抽纸', '3包装', 9.90, 12.90, 100, 40, 'https://img.yzcdn.cn/vant/cat.jpeg', '柔软抽纸，家庭必备'),
 (4, '洗手液', '500ml瓶装', 15.00, 18.00, 60, 15, 'https://img.yzcdn.cn/vant/cat.jpeg', '抑菌洗手液'),
 (4, '牙刷', '软毛款', 8.90, 12.00, 80, 22, 'https://img.yzcdn.cn/vant/cat.jpeg', '柔软刷毛，保护牙龈'),
+(4, '垃圾袋', '加厚 100只', 12.00, 15.00, 80, 30, 'https://img.yzcdn.cn/vant/cat.jpeg', '加厚垃圾袋，结实耐用'),
+(4, '洗衣皂', '透明皂 3块装', 10.00, 12.00, 70, 18, 'https://img.yzcdn.cn/vant/cat.jpeg', '深层去污洗衣皂'),
 -- 文具类
 (5, '中性笔', '黑色 12支装', 12.00, 15.00, 100, 55, 'https://img.yzcdn.cn/vant/cat.jpeg', '顺滑书写中性笔'),
 (5, '笔记本', 'A5 100页', 8.00, 10.00, 80, 35, 'https://img.yzcdn.cn/vant/cat.jpeg', '优质纸张，书写流畅'),
-(5, '铅笔盒', '多功能款', 18.00, 22.00, 50, 12, 'https://img.yzcdn.cn/vant/cat.jpeg', '多层铅笔盒，收纳方便');
+(5, '铅笔盒', '多功能款', 18.00, 22.00, 50, 12, 'https://img.yzcdn.cn/vant/cat.jpeg', '多层铅笔盒，收纳方便'),
+(5, '橡皮擦', '4B 4块装', 3.00, 4.00, 120, 45, 'https://img.yzcdn.cn/vant/cat.jpeg', '柔软橡皮，擦除干净'),
+(5, '直尺套装', '20cm 透明款', 5.00, 7.00, 90, 28, 'https://img.yzcdn.cn/vant/cat.jpeg', '透明直尺，精准刻度');
+
+-- 测试用户数据
+INSERT INTO `sys_user` (`openid`, `username`, `password`, `nickname`, `avatar`, `phone`, `balance`, `role`, `status`) VALUES
+('test_openid_1', 'user001', '$2a$10$slYQmyNdGzTn7ZLBXBChFOC9f6kFjAqPhccnP6DxlWXx2lPk1C3G6', '张三', '', '13800138001', 100.00, 0, 1),
+('test_openid_2', 'user002', '$2a$10$slYQmyNdGzTn7ZLBXBChFOC9f6kFjAqPhccnP6DxlWXx2lPk1C3G6', '李四', '', '13800138002', 50.00, 0, 1),
+('test_openid_3', 'user003', '$2a$10$slYQmyNdGzTn7ZLBXBChFOC9f6kFjAqPhccnP6DxlWXx2lPk1C3G6', '王五', '', '13800138003', 200.00, 1, 1);
+
+-- 测试地址数据
+INSERT INTO `ums_address` (`user_id`, `consignee`, `phone`, `province`, `city`, `district`, `detail`, `is_default`) VALUES
+(1, '张三', '13800138001', '广东省', '深圳市', '南山区', '科技园路88号', 1),
+(2, '李四', '13800138002', '广东省', '广州市', '天河区', '天河路100号', 1);
+
+-- 测试购物车数据
+INSERT INTO `oms_cart` (`user_id`, `product_id`, `quantity`) VALUES
+(1, 1, 2),
+(1, 6, 5),
+(2, 3, 1),
+(2, 8, 3);
+
+-- 测试激活码数据
+INSERT INTO `sys_activation_code` (`code`, `is_used`) VALUES
+('ACTIVATE2024001', 0),
+('ACTIVATE2024002', 0),
+('ACTIVATE2024003', 1);
+
+-- 测试订单数据（可选）
+-- INSERT INTO `oms_order` (`order_no`, `user_id`, `total_amount`, `pay_amount`, `freight`, `pay_type`, `pay_time`, `pay_status`, `order_type`, `status`, `address_id`) VALUES
+-- ('DK20240101001', 1, 50.00, 50.00, 0, 1, '2024-01-01 12:00:00', 1, 2, 4, 1);
+
+-- INSERT INTO `oms_order_item` (`order_id`, `product_id`, `product_name`, `product_image`, `price`, `quantity`, `total_price`) VALUES
+-- (1, 1, '奥利奥饼干', 'https://img.yzcdn.cn/vant/cat.jpeg', 9.90, 2, 19.80),
+-- (1, 6, '农夫山泉', 'https://img.yzcdn.cn/vant/cat.jpeg', 2.00, 5, 10.00);

@@ -2,6 +2,7 @@
 -- 仅包含建表 DDL 和必要的初始数据（无测试商品）
 -- 使用方式：CREATE DATABASE dorm_kiosk; USE dorm_kiosk; SOURCE schema-prod.sql;
 
+-- 创建数据库
 CREATE DATABASE IF NOT EXISTS dorm_kiosk DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 USE dorm_kiosk;
@@ -69,6 +70,7 @@ CREATE TABLE `pms_product` (
   `images` TEXT COMMENT '图片列表JSON',
   `description` TEXT COMMENT '商品描述',
   `status` TINYINT DEFAULT 1 COMMENT '状态 0-下架 1-上架',
+  `version` INT DEFAULT 0 COMMENT '版本号（乐观锁）',
   `deleted` TINYINT DEFAULT 0 COMMENT '删除标记 0-未删除 1-已删除',
   `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -117,7 +119,7 @@ CREATE TABLE `oms_order` (
   `total_amount` DECIMAL(10,2) NOT NULL COMMENT '订单总额',
   `pay_amount` DECIMAL(10,2) NOT NULL COMMENT '实付金额',
   `freight` DECIMAL(10,2) DEFAULT 0 COMMENT '运费',
-  `pay_type` TINYINT COMMENT '支付方式 1-微信支付',
+  `pay_type` TINYINT COMMENT '支付方式 1-微信支付 2-支付宝 3-余额支付',
   `pay_time` DATETIME COMMENT '支付时间',
   `pay_status` TINYINT DEFAULT 0 COMMENT '支付状态 0-未支付 1-已支付',
   `order_type` TINYINT NOT NULL COMMENT '订单类型 1-自取 2-配送',
@@ -150,6 +152,18 @@ CREATE TABLE `oms_order_item` (
   `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   KEY `idx_order_id` (`order_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单商品明细表';
+
+-- 店主激活码表
+DROP TABLE IF EXISTS `sys_activation_code`;
+CREATE TABLE `sys_activation_code` (
+  `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '激活码ID',
+  `code` VARCHAR(64) NOT NULL COMMENT '激活码',
+  `is_used` TINYINT DEFAULT 0 COMMENT '是否已使用 0-未使用 1-已使用',
+  `user_id` BIGINT COMMENT '使用用户ID',
+  `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `use_time` DATETIME COMMENT '使用时间',
+  UNIQUE KEY `uk_code` (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='店主激活码表';
 
 -- 初始管理员（密码：admin123）
 INSERT INTO `sys_admin` (`username`, `password`, `nickname`) VALUES
