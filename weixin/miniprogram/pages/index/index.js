@@ -2,9 +2,9 @@ const imageUtil = require('../../utils/image.js');
 
 Page({
   data: {
-    categories: [],
-    hotProducts: [],
-    banners: []
+    banners: [],
+    announcement: '',
+    featuredProducts: []
   },
 
   onLoad() {
@@ -25,35 +25,53 @@ Page({
   loadData() {
     const api = require('../../api/index.js');
     Promise.all([
-      api.getCategoryList(),
-      api.getHotProducts(10)
-    ]).then(([categoryRes, productRes]) => {
-      // 处理分类图片
-      const categories = (categoryRes.data || []).map(item => ({
-        ...item,
-        icon: imageUtil.getImageUrl(item.icon)
-      }));
-      // 处理商品图片
-      const hotProducts = (productRes.data || []).map(item => ({
+      api.getConfigs(),
+      api.getHotProducts(4)
+    ]).then(([configRes, productRes]) => {
+      const configs = configRes.data || {};
+      const featuredProducts = (productRes.data || []).map(item => ({
         ...item,
         image: imageUtil.getImageUrl(item.image)
       }));
       this.setData({
-        categories: categories,
-        hotProducts: hotProducts
+        announcement: configs.announcement || '欢迎光临校园小卖部！',
+        featuredProducts: featuredProducts
       });
     }).catch(err => {
       console.error('加载数据失败', err);
+      api.getHotProducts(4).then(res => {
+        const featuredProducts = (res.data || []).map(item => ({
+          ...item,
+          image: imageUtil.getImageUrl(item.image)
+        }));
+        this.setData({
+          featuredProducts: featuredProducts
+        });
+      });
     });
-  },
-
-  goToCategory(e) {
-    const { id } = e.currentTarget.dataset;
-    wx.navigateTo({ url: `/pages/product/list/list?categoryId=${id}` });
   },
 
   goToProduct(e) {
     const { id } = e.currentTarget.dataset;
     wx.navigateTo({ url: `/pages/product/detail/detail?id=${id}` });
+  },
+
+  addToCart(e) {
+    const { id } = e.currentTarget.dataset;
+    const app = getApp();
+    const userId = app.globalData.userId || wx.getStorageSync('userId');
+    
+    if (!userId) {
+      wx.navigateTo({ url: '/pages/login/login' });
+      return;
+    }
+
+    const api = require('../../api/index.js');
+    api.addCart(userId, { productId: id, quantity: 1 }).then(() => {
+      wx.showToast({ title: '已加入购物车', icon: 'success' });
+    }).catch(err => {
+      console.error('加入购物车失败', err);
+      wx.showToast({ title: '加入失败', icon: 'none' });
+    });
   }
 });

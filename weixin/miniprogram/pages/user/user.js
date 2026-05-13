@@ -32,8 +32,12 @@ Page({
     });
   },
 
-  goToOrders() {
-    wx.navigateTo({ url: '/pages/order/list/list' });
+  goToOrders(e) {
+    let url = '/pages/order/list/list';
+    if (e && e.currentTarget && e.currentTarget.dataset && e.currentTarget.dataset.status !== undefined) {
+      url += '?status=' + e.currentTarget.dataset.status;
+    }
+    wx.navigateTo({ url: url });
   },
 
   goToAddress() {

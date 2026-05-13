@@ -25,10 +25,15 @@
       </view>
       <view class="order-products">
         <view class="product-item" wx:for="{{item.items}}" wx:for-item="pitem" wx:key="id">
-          <image src="{{pitem.productImage}}" mode="aspectFill" class="product-image" />
+          <view class="product-image-wrapper">
+            <image src="{{pitem.productImage}}" mode="aspectFill" class="product-image" />
+          </view>
           <view class="product-info">
             <text class="product-name">{{pitem.productName}}</text>
-            <text class="product-price">¥{{pitem.price}} x {{pitem.quantity}}</text>
+            <view class="product-price-row">
+              <text class="product-price">¥{{pitem.price}}</text>
+              <text class="product-quantity">x {{pitem.quantity}}</text>
+            </view>
           </view>
         </view>
       </view>

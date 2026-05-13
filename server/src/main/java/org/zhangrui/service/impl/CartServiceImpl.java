@@ -61,22 +61,16 @@ public class CartServiceImpl implements ICartService {
             throw new BusinessException("库存不足");
         }
 
-        // 1. 先查找是否有记录（包括已删除的）
         Cart existCart = cartMapper.selectByUserIdAndProductIdIncludingDeleted(userId, productId);
 
         if (existCart != null) {
-            // 如果记录存在
             if (existCart.getDeleted() == 1) {
-                // 如果是已删除的，恢复它并设置数量
-                existCart.setDeleted(0);
-                existCart.setQuantity(quantity);
+                cartMapper.recoverById(existCart.getId(), quantity);
             } else {
-                // 如果是正常记录，累加数量
                 existCart.setQuantity(existCart.getQuantity() + quantity);
+                cartMapper.updateById(existCart);
             }
-            cartMapper.updateById(existCart);
         } else {
-            // 没有记录，新增
             Cart cart = new Cart();
             cart.setUserId(userId);
             cart.setProductId(productId);

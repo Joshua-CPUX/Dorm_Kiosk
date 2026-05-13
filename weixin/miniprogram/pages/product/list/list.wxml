@@ -1,56 +1,86 @@
-<view class="product-list">
-  <view class="search-bar">
-    <view class="search-wrapper">
-      <image class="search-icon" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIxIDIxTDE2LjY1IDE2LjY1TTE5IDEwLjVDMTkgMTUuMTk0NCAxNS4xOTQ0IDE5IDEwLjUgMTlDNS44MDU1OCAxOSAyIDE1LjE5NDQgMiAxMC41QzIgNS44MDU1OCA1LjgwNTU4IDIgMTAuNSAyQzE1LjE5NDQgMiAxOSA1LjgwNTU4IDE5IDEwLjVaIiBzdHJva2U9IiM5OTk5OTkiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPg==" />
-      <input
-        class="search-input"
-        type="text"
-        placeholder="搜索商品"
-        value="{{keyword}}"
-        bindconfirm="onSearch"
-      />
-      <view wx:if="{{keyword}}" class="clear-btn" bindtap="onClearSearch">
-        <image class="clear-icon" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE4IDZMMCAxOE02IDZMMjIgMTgiIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+" />
+<view class="list-container">
+  <view class="category-sidebar">
+    <view class="sidebar-inner">
+      <view 
+        class="category-item {{activeCategoryId === null ? 'active' : ''}}"
+        bindtap="selectCategory"
+        data-id="{{null}}"
+      >
+        <text>全部</text>
+      </view>
+      <view 
+        class="category-item {{activeCategoryId === item.id ? 'active' : ''}}"
+        wx:for="{{categories}}"
+        wx:key="id"
+        bindtap="selectCategory"
+        data-id="{{item.id}}"
+      >
+        <text>{{item.name}}</text>
       </view>
     </view>
   </view>
 
-  <view class="product-grid">
-    <view
-      class="product-item"
-      wx:for="{{products}}"
-      wx:key="id"
-      data-id="{{item.id}}"
-      bindtap="goToDetail"
-    >
-      <view class="image-wrapper">
-        <image wx:if="{{item.image}}" src="{{item.image}}" mode="aspectFill" class="product-image" />
-        <view wx:else class="product-image-placeholder"></view>
-        <view class="add-btn-small" data-id="{{item.id}}" data-index="{{index}}" catchtap="addToCart" wx:if="{{item.stock > 0}}">
-          <text class="add-text">+</text>
+  <view class="product-area">
+    <view class="search-bar">
+      <view class="search-wrapper">
+        <text class="search-icon-text">🔍</text>
+        <input
+          class="search-input"
+          type="text"
+          placeholder="搜索商品"
+          value="{{keyword}}"
+          bindconfirm="onSearch"
+        />
+        <view wx:if="{{keyword}}" class="clear-btn" bindtap="onClearSearch">
+          <text class="clear-icon-text">✕</text>
         </view>
-        <view class="out-of-stock" wx:if="{{item.stock <= 0}}">已售罄</view>
       </view>
-      <view class="product-info">
-        <text class="product-name">{{item.name}}</text>
-        <text class="product-subtitle">{{item.subtitle}}</text>
-        <view class="product-bottom">
-          <view class="price-section">
-            <text class="product-price">¥{{item.price}}</text>
-            <text class="product-sales">已售{{item.sales || 0}}</text>
+    </view>
+
+    <scroll-view 
+      class="product-scroll"
+      scroll-y
+      enable-back-to-top
+      bindscrolltolower="onScrollToLower"
+    >
+      <view class="product-grid">
+        <view
+          class="product-item"
+          wx:for="{{products}}"
+          wx:key="id"
+          data-id="{{item.id}}"
+          bindtap="goToDetail"
+        >
+          <view class="image-wrapper">
+            <image wx:if="{{item.image}}" src="{{item.image}}" mode="aspectFill" class="product-image" />
+            <view wx:else class="product-image-placeholder"></view>
+            <view class="add-btn-small" data-id="{{item.id}}" data-index="{{index}}" catchtap="addToCart" wx:if="{{item.stock > 0}}">
+              <text class="add-text">+</text>
+            </view>
+            <view class="out-of-stock" wx:if="{{item.stock <= 0}}">已售罄</view>
+          </view>
+          <view class="product-info">
+            <text class="product-name">{{item.name}}</text>
+            <text class="product-subtitle">{{item.subtitle}}</text>
+            <view class="product-bottom">
+              <view class="price-section">
+                <text class="product-price">¥{{item.price}}</text>
+                <text class="product-sales">已售{{item.sales || 0}}</text>
+              </view>
+            </view>
           </view>
         </view>
       </view>
-    </view>
-  </view>
 
-  <view class="loading-tip" wx:if="{{loading}}">
-    <text>加载中...</text>
-  </view>
-  <view class="loading-tip" wx:elif="{{!hasMore && products.length > 0}}">
-    <text>没有更多了</text>
-  </view>
-  <view class="empty-tip" wx:if="{{!loading && products.length === 0}}">
-    <text>暂无商品</text>
+      <view class="loading-tip" wx:if="{{loading}}">
+        <text>加载中...</text>
+      </view>
+      <view class="loading-tip" wx:elif="{{!hasMore && products.length > 0}}">
+        <text>没有更多了</text>
+      </view>
+      <view class="empty-tip" wx:if="{{!loading && products.length === 0}}">
+        <text>暂无商品</text>
+      </view>
+    </scroll-view>
   </view>
 </view>

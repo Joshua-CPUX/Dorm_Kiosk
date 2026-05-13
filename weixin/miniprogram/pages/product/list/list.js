@@ -2,11 +2,13 @@ const imageUtil = require('../../../utils/image.js');
 
 Page({
   data: {
+    categories: [],
+    activeCategoryId: null,
     categoryId: null,
     keyword: '',
     products: [],
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 20,
     hasMore: true,
     loading: false,
     userId: null
@@ -17,13 +19,24 @@ Page({
     const userId = app.globalData.userId || wx.getStorageSync('userId');
     this.setData({ userId });
 
-    if (options.categoryId) {
-      this.setData({ categoryId: parseInt(options.categoryId) });
-    }
-    if (options.keyword) {
-      this.setData({ keyword: options.keyword });
-    }
-    this.loadProducts();
+    this.loadCategories().then(() => {
+      if (options.categoryId) {
+        this.setData({ 
+          categoryId: parseInt(options.categoryId),
+          activeCategoryId: parseInt(options.categoryId)
+        });
+      } else if (app.globalData.targetCategoryId) {
+        this.setData({ 
+          categoryId: app.globalData.targetCategoryId,
+          activeCategoryId: app.globalData.targetCategoryId
+        });
+        app.globalData.targetCategoryId = null;
+      }
+      if (options.keyword) {
+        this.setData({ keyword: options.keyword });
+      }
+      this.loadProducts();
+    });
   },
 
   onShow() {
@@ -45,6 +58,30 @@ Page({
     wx.stopPullDownRefresh();
   },
 
+  loadCategories() {
+    const api = require('../../../api/index.js');
+    return api.getCategoryList().then(res => {
+      const categories = res.data || [];
+      this.setData({ categories });
+    }).catch(err => {
+      console.error('加载分类失败', err);
+      this.setData({ categories: [] });
+    });
+  },
+
+  selectCategory(e) {
+    const id = e.currentTarget.dataset.id;
+    const newCategoryId = id === this.data.activeCategoryId ? null : id;
+    this.setData({
+      activeCategoryId: id,
+      categoryId: newCategoryId,
+      pageNum: 1,
+      products: [],
+      hasMore: true
+    });
+    this.loadProducts();
+  },
+
   loadProducts(append = false) {
     if (this.data.loading) return;
     this.setData({ loading: true });
@@ -56,7 +93,6 @@ Page({
       categoryId: this.data.categoryId,
       keyword: this.data.keyword
     }).then(res => {
-      // 处理商品图片
       const rawProducts = (res.data.records || []);
       const products = rawProducts.map(item => ({
         ...item,
@@ -67,7 +103,7 @@ Page({
         : products;
       this.setData({
         products: finalProducts,
-        hasMore: rawProducts.length < res.data.total,
+        hasMore: rawProducts.length >= this.data.pageSize,
         loading: false
       });
     }).catch(err => {
@@ -76,12 +112,22 @@ Page({
   },
 
   onSearch(e) {
-    this.setData({ keyword: e.detail.value, pageNum: 1, products: [], hasMore: true });
+    this.setData({ 
+      keyword: e.detail.value, 
+      pageNum: 1, 
+      products: [], 
+      hasMore: true 
+    });
     this.loadProducts();
   },
 
   onClearSearch() {
-    this.setData({ keyword: '', pageNum: 1, products: [], hasMore: true });
+    this.setData({ 
+      keyword: '', 
+      pageNum: 1, 
+      products: [], 
+      hasMore: true 
+    });
     this.loadProducts();
   },
 

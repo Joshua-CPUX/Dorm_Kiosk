@@ -37,12 +37,17 @@ Page({
 
   calculateTotal() {
     let total = 0;
+    let selectedCount = 0;
     this.data.cartList.forEach(item => {
       if (item.selected) {
         total += item.price * item.quantity;
+        selectedCount++;
       }
     });
-    this.setData({ totalAmount: total.toFixed(2) });
+    this.setData({ 
+      totalAmount: total.toFixed(2),
+      selectedCount: selectedCount 
+    });
   },
 
   onSelectItem(e) {

@@ -16,11 +16,18 @@ Page({
     userId: null
   },
 
+  onLoad(options) {
+    if (options.status !== undefined) {
+      this.setData({ status: options.status === 'null' ? null : parseInt(options.status) });
+    }
+  },
+
   onShow() {
     const app = getApp();
     const userId = app.globalData.userId || wx.getStorageSync('userId');
     this.setData({ userId });
     if (userId) {
+      this.setData({ orders: [], pageNum: 1, hasMore: true });
       this.loadOrders();
     }
   },

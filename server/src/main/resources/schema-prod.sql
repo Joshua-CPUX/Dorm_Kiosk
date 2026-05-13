@@ -176,3 +176,21 @@ INSERT INTO `pms_category` (`name`, `icon`, `sort`) VALUES
 ('方便食品', 'Bowl', 3),
 ('日用品', 'ShoppingBag', 4),
 ('文具', 'EditPen', 5);
+
+-- 系统配置表
+DROP TABLE IF EXISTS `sys_config`;
+CREATE TABLE `sys_config` (
+  `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '配置ID',
+  `config_key` VARCHAR(64) NOT NULL COMMENT '配置键',
+  `config_value` VARCHAR(512) COMMENT '配置值',
+  `description` VARCHAR(128) COMMENT '配置描述',
+  `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  UNIQUE KEY `uk_config_key` (`config_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统配置表';
+
+-- 系统配置初始化数据
+INSERT INTO `sys_config` (`config_key`, `config_value`, `description`) VALUES
+('announcement', '欢迎光临校园小卖部！满29元起送，支持自取和配送', '首页公告'),
+('min_order_amount', '29', '最低起送金额'),
+('delivery_fee', '0', '配送费');

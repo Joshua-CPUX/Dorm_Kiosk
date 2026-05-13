@@ -18,6 +18,9 @@ module.exports = {
   getProductDetail: function(id) { return request.get('/product/' + id); },
   getHotProducts: function(limit) { return request.get('/product/hot', null, { limit: limit }); },
 
+  // 系统配置
+  getConfigs: function() { return request.get('/config/get'); },
+
   // 购物车
   getCartList: function(userId) { return request.get('/cart/list', null, { userId: userId }); },
   addCart: function(userId, data) { return request.post('/cart/add', data, { userId: userId }); },

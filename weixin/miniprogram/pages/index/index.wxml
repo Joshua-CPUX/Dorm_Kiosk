@@ -12,42 +12,19 @@
     <text>校园小卖部</text>
   </view>
 
-  <view class="category-section">
-    <view class="section-title-wrapper">
-      <text class="section-title">商品分类</text>
-      <text class="section-badge">热门</text>
-    </view>
-    <view class="category-grid">
-      <view
-        class="category-item"
-        wx:for="{{categories}}"
-        wx:key="id"
-        data-id="{{item.id}}"
-        bindtap="goToCategory"
-      >
-        <view class="category-icon-wrapper">
-          <image 
-            wx:if="{{item.icon && (item.icon.indexOf('http') === 0 || item.icon.indexOf('/') === 0)}}"
-            src="{{item.icon}}" 
-            mode="aspectFit" 
-            class="category-image"
-          />
-          <text wx:else class="category-icon">{{item.icon || '📦'}}</text>
-        </view>
-        <text class="category-name">{{item.name}}</text>
-      </view>
-    </view>
+  <view class="announcement-bar">
+    <text class="announcement-icon">📢</text>
+    <text class="announcement-text">{{announcement}}</text>
   </view>
 
   <view class="product-section">
     <view class="section-title-wrapper">
-      <text class="section-title">热门商品</text>
-      <text class="section-more" bindtap="goToProductList">查看更多</text>
+      <text class="section-title">精选推荐</text>
     </view>
     <view class="product-grid">
       <view
         class="product-item"
-        wx:for="{{hotProducts}}"
+        wx:for="{{featuredProducts}}"
         wx:key="id"
         data-id="{{item.id}}"
         bindtap="goToProduct"
@@ -55,90 +32,12 @@
         <view class="product-image-wrapper">
           <image wx:if="{{item.image}}" src="{{item.image}}" mode="aspectFill" class="product-image" />
           <view wx:else class="product-image-placeholder"><text>暂无图片</text></view>
-          <view class="product-badge" wx:if="{{item.tag}}">{{item.tag}}</view>
         </view>
         <view class="product-info">
           <text class="product-name">{{item.name}}</text>
-          <text class="product-subtitle">{{item.subtitle}}</text>
           <view class="product-bottom">
             <view class="price-wrapper">
               <text class="product-price">¥{{item.price}}</text>
-              <text class="product-original-price" wx:if="{{item.originalPrice}}">¥{{item.originalPrice}}</text>
-            </view>
-            <view class="add-cart-btn" data-id="{{item.id}}" catchtap="addToCart">
-              <text>+</text>
-            </view>
-          </view>
-        </view>
-      </view>
-    </view>
-  </view>
-</view><view class="index">
-  <view class="banner" wx:if="{{banners.length > 0}}">
-    <swiper indicator-dots autoplay interval="3500" circular indicator-color="rgba(255,255,255,0.4)" indicator-active-color="#ffffff">
-      <block wx:for="{{banners}}" wx:key="index">
-        <swiper-item>
-          <image src="{{item.image}}" mode="aspectFill" />
-        </swiper-item>
-      </block>
-    </swiper>
-  </view>
-  <view class="banner-placeholder" wx:else>
-    <text>校园小卖部</text>
-  </view>
-
-  <view class="category-section">
-    <view class="section-title-wrapper">
-      <text class="section-title">商品分类</text>
-      <text class="section-badge">热门</text>
-    </view>
-    <view class="category-grid">
-      <view
-        class="category-item"
-        wx:for="{{categories}}"
-        wx:key="id"
-        data-id="{{item.id}}"
-        bindtap="goToCategory"
-      >
-        <view class="category-icon-wrapper">
-          <image 
-            wx:if="{{item.icon && (item.icon.indexOf('http') === 0 || item.icon.indexOf('/') === 0)}}"
-            src="{{item.icon}}" 
-            mode="aspectFit" 
-            class="category-image"
-          />
-          <text wx:else class="category-icon">{{item.icon || '📦'}}</text>
-        </view>
-        <text class="category-name">{{item.name}}</text>
-      </view>
-    </view>
-  </view>
-
-  <view class="product-section">
-    <view class="section-title-wrapper">
-      <text class="section-title">热门商品</text>
-      <text class="section-more" bindtap="goToProductList">查看更多</text>
-    </view>
-    <view class="product-grid">
-      <view
-        class="product-item"
-        wx:for="{{hotProducts}}"
-        wx:key="id"
-        data-id="{{item.id}}"
-        bindtap="goToProduct"
-      >
-        <view class="product-image-wrapper">
-          <image wx:if="{{item.image}}" src="{{item.image}}" mode="aspectFill" class="product-image" />
-          <view wx:else class="product-image-placeholder"><text>暂无图片</text></view>
-          <view class="product-badge" wx:if="{{item.tag}}">{{item.tag}}</view>
-        </view>
-        <view class="product-info">
-          <text class="product-name">{{item.name}}</text>
-          <text class="product-subtitle">{{item.subtitle}}</text>
-          <view class="product-bottom">
-            <view class="price-wrapper">
-              <text class="product-price">¥{{item.price}}</text>
-              <text class="product-original-price" wx:if="{{item.originalPrice}}">¥{{item.originalPrice}}</text>
             </view>
             <view class="add-cart-btn" data-id="{{item.id}}" catchtap="addToCart">
               <text>+</text>

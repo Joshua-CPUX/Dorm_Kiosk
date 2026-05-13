@@ -103,7 +103,7 @@
 .menu-section {
   background: #ffffff;
   border-radius: 28rpx;
-  margin: -60rpx 24rpx 20rpx;
+  margin: 0 24rpx 20rpx;
   overflow: hidden;
   box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
   position: relative;
@@ -228,9 +228,11 @@
 .order-section {
   background: #ffffff;
   border-radius: 24rpx;
-  margin: 0 24rpx 20rpx;
+  margin: -60rpx 24rpx 20rpx;
   padding: 28rpx;
   box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 3;
 }
 
 .order-header {

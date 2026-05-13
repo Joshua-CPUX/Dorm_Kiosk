@@ -35,7 +35,7 @@
   <view class="empty-cart" wx:else>
     <text class="empty-cart-icon">🛒</text>
     <text class="empty-cart-text">购物车是空的</text>
-    <navigator url="/pages/index/index" open-type="switchTab">
+    <navigator url="/pages/product/list/list" open-type="switchTab">
       <view class="go-shopping">去购物</view>
     </navigator>
   </view>
