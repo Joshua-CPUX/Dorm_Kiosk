@@ -1,8 +1,10 @@
 package org.zhangrui.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.zhangrui.common.exception.BusinessException;
 import org.zhangrui.mapper.CategoryMapper;
@@ -80,6 +82,7 @@ public class ProductServiceImpl implements IProductService {
         product.setImages(dto.getImages());
         product.setDescription(dto.getDescription());
         product.setStatus(1);
+        product.setVersion(0);
         productMapper.insert(product);
         return product.getId();
     }
@@ -147,11 +150,35 @@ public class ProductServiceImpl implements IProductService {
         if (product == null) {
             throw new BusinessException("商品不存在");
         }
-        product.setStock(product.getStock() + quantity);
-        if (product.getStock() < 0) {
-            throw new BusinessException("库存不足");
+
+        if (quantity < 0) {
+            int newStock = product.getStock() + quantity;
+            if (newStock < 0) {
+                throw new BusinessException("库存不足");
+            }
+            LambdaUpdateWrapper<Product> wrapper = new LambdaUpdateWrapper<>();
+            wrapper.eq(Product::getId, id)
+                    .eq(Product::getVersion, product.getVersion())
+                    .ge(Product::getStock, -quantity)
+                    .setSql("stock = stock + " + quantity)
+                    .setSql("version = version + 1");
+
+            int updated = productMapper.update(null, wrapper);
+            if (updated == 0) {
+                throw new BusinessException("库存不足或并发更新，请重试");
+            }
+        } else {
+            LambdaUpdateWrapper<Product> wrapper = new LambdaUpdateWrapper<>();
+            wrapper.eq(Product::getId, id)
+                    .eq(Product::getVersion, product.getVersion())
+                    .setSql("stock = stock + " + quantity)
+                    .setSql("version = version + 1");
+
+            int updated = productMapper.update(null, wrapper);
+            if (updated == 0) {
+                throw new BusinessException("并发更新，请重试");
+            }
         }
-        productMapper.updateById(product);
     }
 
     @Override
@@ -167,18 +194,7 @@ public class ProductServiceImpl implements IProductService {
 
     private ProductVO convertToVO(Product product) {
         ProductVO vo = new ProductVO();
-        vo.setId(product.getId());
-        vo.setCategoryId(product.getCategoryId());
-        vo.setName(product.getName());
-        vo.setSubtitle(product.getSubtitle());
-        vo.setPrice(product.getPrice());
-        vo.setOriginalPrice(product.getOriginalPrice());
-        vo.setStock(product.getStock());
-        vo.setSales(product.getSales());
-        vo.setImage(product.getImage());
-        vo.setImages(product.getImages());
-        vo.setDescription(product.getDescription());
-        vo.setStatus(product.getStatus());
+        BeanUtils.copyProperties(product, vo);
 
         Category category = categoryMapper.selectById(product.getCategoryId());
         if (category != null) {

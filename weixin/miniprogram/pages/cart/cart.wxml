@@ -1,28 +1,40 @@
 <view class="cart-page">
+  <view class="cart-header" wx:if="{{cartList.length > 0}}">
+    <view class="cart-title">
+      <text>购物车</text>
+      <text class="cart-count">{{cartList.length}}件商品</text>
+    </view>
+  </view>
+
   <view class="cart-list" wx:if="{{cartList.length > 0}}">
     <view class="cart-item" wx:for="{{cartList}}" wx:key="cartId">
       <view class="item-select" data-id="{{item.cartId}}" bindtap="onSelectItem">
         <view class="checkbox {{item.selected ? 'checked' : ''}}"></view>
       </view>
-      <image wx:if="{{item.image}}" src="{{item.image}}" mode="aspectFill" class="item-image" />
-      <view wx:else class="item-image-placeholder"></view>
+      <view class="item-image-wrapper">
+        <image wx:if="{{item.image}}" src="{{item.image}}" mode="aspectFill" class="item-image" />
+        <view wx:else class="item-image-placeholder"><text>暂无图片</text></view>
+      </view>
       <view class="item-info">
         <text class="item-name">{{item.name}}</text>
-        <view class="item-bottom">
+        <view class="item-price-row">
           <text class="item-price">¥{{item.price}}</text>
           <view class="quantity-control">
-            <text class="qty-btn" data-id="{{item.cartId}}" data-value="{{item.quantity - 1}}" bindtap="onQuantityChange">-</text>
+            <text class="qty-btn {{item.quantity <= 1 ? 'disabled' : ''}}" data-id="{{item.cartId}}" data-value="{{item.quantity - 1}}" bindtap="onQuantityChange">-</text>
             <text class="qty-value">{{item.quantity}}</text>
             <text class="qty-btn" data-id="{{item.cartId}}" data-value="{{item.quantity + 1}}" bindtap="onQuantityChange">+</text>
           </view>
         </view>
       </view>
-      <view class="item-delete" data-id="{{item.cartId}}" bindtap="onDeleteItem">删除</view>
+      <view class="item-delete" data-id="{{item.cartId}}" bindtap="onDeleteItem">
+        <text class="item-delete-icon">🗑</text>
+      </view>
     </view>
   </view>
 
   <view class="empty-cart" wx:else>
-    <text>购物车是空的</text>
+    <text class="empty-cart-icon">🛒</text>
+    <text class="empty-cart-text">购物车是空的</text>
     <navigator url="/pages/index/index" open-type="switchTab">
       <view class="go-shopping">去购物</view>
     </navigator>
@@ -37,6 +49,8 @@
       <text class="total-label">合计:</text>
       <text class="total-price">¥{{totalAmount}}</text>
     </view>
-    <view class="checkout-btn" bindtap="onCheckout">结算</view>
+    <view class="checkout-btn {{selectedCount > 0 ? '' : 'disabled'}}" bindtap="onCheckout">
+      结算({{selectedCount}})
+    </view>
   </view>
 </view>

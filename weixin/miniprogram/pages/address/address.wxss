@@ -1,23 +1,22 @@
-/* 地址管理页 */
 .address-page {
   min-height: 100vh;
-  background: #f5f5f5;
-  padding-bottom: 160rpx;
+  background: #f8f9fa;
+  padding-bottom: 180rpx;
 }
 
-/* 地址表单 */
 .address-form {
   background: #ffffff;
   margin: 24rpx;
-  border-radius: 16rpx;
-  padding: 24rpx;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
 }
 
 .form-item {
   display: flex;
   align-items: center;
-  padding: 24rpx 0;
-  border-bottom: 1rpx solid #f0f0f0;
+  padding: 28rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
 }
 
 .form-item:last-of-type {
@@ -26,15 +25,16 @@
 
 .form-item .label {
   width: 160rpx;
-  font-size: 28rpx;
+  font-size: 30rpx;
   color: #333333;
+  font-weight: 500;
   flex-shrink: 0;
 }
 
 .form-item .input {
   flex: 1;
-  font-size: 28rpx;
-  color: #333333;
+  font-size: 30rpx;
+  color: #1a1a1a;
   text-align: right;
 }
 
@@ -46,8 +46,8 @@
 }
 
 .form-item .picker .text {
-  font-size: 28rpx;
-  color: #333333;
+  font-size: 30rpx;
+  color: #1a1a1a;
 }
 
 .form-item .picker .placeholder {
@@ -56,25 +56,26 @@
 }
 
 .form-item .picker .arrow {
-  font-size: 28rpx;
-  color: #999999;
-  margin-left: 8rpx;
+  font-size: 32rpx;
+  color: #cccccc;
+  margin-left: 12rpx;
 }
 
 .form-actions {
   display: flex;
   gap: 24rpx;
-  margin-top: 32rpx;
+  margin-top: 40rpx;
 }
 
 .form-actions .btn {
   flex: 1;
-  height: 80rpx;
-  border-radius: 40rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28rpx;
+  font-size: 30rpx;
+  font-weight: 500;
 }
 
 .form-actions .btn.cancel {
@@ -82,32 +83,42 @@
   color: #666666;
 }
 
-.form-actions .btn.confirm {
-  background: linear-gradient(135deg, #1890ff, #096dd9);
-  color: #ffffff;
+.form-actions .btn.cancel:active {
+  background: #e8e8e8;
 }
 
-/* 地址列表 */
+.form-actions .btn.confirm {
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+  color: #ffffff;
+  box-shadow: 0 6rpx 20rpx rgba(255, 107, 53, 0.4);
+}
+
+.form-actions .btn.confirm:active {
+  transform: scale(0.98);
+  box-shadow: 0 3rpx 10rpx rgba(255, 107, 53, 0.5);
+}
+
 .address-list {
-  padding: 16rpx;
+  padding: 20rpx;
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
+  gap: 20rpx;
 }
 
 .address-item {
   background: #ffffff;
-  border-radius: 16rpx;
-  padding: 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  border-radius: 24rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
   display: flex;
   align-items: flex-start;
-  gap: 16rpx;
-  transition: transform 0.1s;
+  gap: 20rpx;
+  transition: all 0.2s ease;
 }
 
 .address-item:active {
-  transform: scale(0.98);
+  transform: scale(0.99);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
 }
 
 .address-info {
@@ -119,39 +130,38 @@
   display: flex;
   align-items: center;
   gap: 16rpx;
-  margin-bottom: 12rpx;
+  margin-bottom: 16rpx;
   flex-wrap: wrap;
 }
 
 .consignee {
-  font-size: 30rpx;
+  font-size: 32rpx;
   font-weight: 600;
-  color: #222222;
+  color: #1a1a1a;
 }
 
 .phone {
-  font-size: 26rpx;
+  font-size: 28rpx;
   color: #666666;
 }
 
 .default-tag {
-  background: #e6f7ff;
-  color: #1890ff;
-  font-size: 20rpx;
-  padding: 4rpx 12rpx;
+  background: rgba(255, 107, 53, 0.1);
+  color: #ff6b35;
+  font-size: 22rpx;
+  font-weight: 600;
+  padding: 6rpx 16rpx;
   border-radius: 20rpx;
-  border: 1rpx solid #91d5ff;
-  font-weight: 500;
+  border: 1rpx solid rgba(255, 107, 53, 0.2);
 }
 
 .detail {
-  font-size: 26rpx;
+  font-size: 28rpx;
   color: #888888;
-  line-height: 1.5;
+  line-height: 1.6;
   display: block;
 }
 
-/* 操作按钮 */
 .address-actions {
   display: flex;
   flex-direction: column;
@@ -160,36 +170,49 @@
 }
 
 .action-btn {
-  font-size: 24rpx;
-  padding: 8rpx 20rpx;
-  border-radius: 24rpx;
+  font-size: 26rpx;
+  padding: 12rpx 24rpx;
+  border-radius: 28rpx;
   text-align: center;
+  font-weight: 500;
 }
 
 .action-btn.edit {
-  color: #1890ff;
-  border: 1rpx solid #91d5ff;
-  background: #e6f7ff;
+  color: #ff6b35;
+  border: 2rpx solid rgba(255, 107, 53, 0.3);
+  background: rgba(255, 107, 53, 0.05);
+}
+
+.action-btn.edit:active {
+  background: rgba(255, 107, 53, 0.1);
 }
 
 .action-btn.delete {
   color: #ff4d4f;
-  border: 1rpx solid #ffccc7;
-  background: #fff2f0;
+  border: 2rpx solid rgba(255, 77, 79, 0.3);
+  background: rgba(255, 77, 79, 0.05);
 }
 
-/* 空状态 */
+.action-btn.delete:active {
+  background: rgba(255, 77, 79, 0.1);
+}
+
 .empty-tip {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 160rpx 40rpx;
-  color: #bbbbbb;
-  font-size: 28rpx;
+  padding: 200rpx 40rpx;
+  color: #999999;
+  font-size: 30rpx;
 }
 
-/* 底部添加按钮 */
+.empty-icon {
+  font-size: 160rpx;
+  margin-bottom: 40rpx;
+  opacity: 0.4;
+}
+
 .bottom-bar {
   position: fixed;
   bottom: 0;
@@ -198,19 +221,24 @@
   padding: 20rpx 24rpx;
   padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
   background: #ffffff;
-  box-shadow: 0 -2rpx 16rpx rgba(0, 0, 0, 0.08);
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.08);
 }
 
 .add-btn {
-  background: linear-gradient(135deg, #1890ff, #096dd9);
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
   color: #ffffff;
-  border-radius: 48rpx;
-  height: 88rpx;
+  border-radius: 56rpx;
+  height: 96rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 30rpx;
-  font-weight: 500;
+  font-size: 32rpx;
+  font-weight: 600;
   letter-spacing: 2rpx;
-  box-shadow: 0 4rpx 16rpx rgba(24, 144, 255, 0.4);
+  box-shadow: 0 8rpx 24rpx rgba(255, 107, 53, 0.4);
+}
+
+.add-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 4rpx 12rpx rgba(255, 107, 53, 0.5);
 }

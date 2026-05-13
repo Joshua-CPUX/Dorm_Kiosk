@@ -1,6 +1,7 @@
 package org.zhangrui.model.vo;
 
 import lombok.Data;
+import org.zhangrui.model.enums.UserRole;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -30,6 +31,12 @@ public class UserVO implements Serializable {
 
     private Integer role;
 
+    private String roleName;
+
     private Integer status;
 
+    public void setRole(Integer role) {
+        this.role = role;
+        this.roleName = UserRole.getDescriptionByCode(role);
+    }
 }

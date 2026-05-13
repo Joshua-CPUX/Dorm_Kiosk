@@ -1,61 +1,86 @@
-/* 商品详情页 */
 .product-detail {
   min-height: 100vh;
-  background: #f5f5f5;
-  padding-bottom: 160rpx;
+  background: #f8f9fa;
+  padding-bottom: 180rpx;
 }
 
-/* 商品图片 */
-.detail-image {
+.detail-image-wrapper {
+  position: relative;
   width: 100%;
-  height: 560rpx;
+  height: 600rpx;
   overflow: hidden;
-  background: #f0f0f0;
+  background: #f5f5f5;
 }
 
-.detail-image image {
+.detail-image-wrapper image {
   width: 100%;
-  height: 560rpx;
+  height: 100%;
   display: block;
 }
 
 .detail-image-placeholder {
   width: 100%;
-  height: 560rpx;
-  display: block;
-  background: #f0f0f0;
+  height: 600rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
 }
 
-/* 商品信息卡片 */
+.detail-image-placeholder text {
+  font-size: 32rpx;
+  color: #cccccc;
+}
+
+.image-badge {
+  position: absolute;
+  top: 24rpx;
+  left: 24rpx;
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+  color: #ffffff;
+  font-size: 24rpx;
+  font-weight: 600;
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(255, 107, 53, 0.4);
+}
+
 .detail-info {
   background: #ffffff;
-  padding: 32rpx 24rpx 24rpx;
-  margin-bottom: 16rpx;
+  padding: 32rpx;
+  margin-bottom: 20rpx;
 }
 
 .price-row {
   display: flex;
   align-items: baseline;
   gap: 16rpx;
-  margin-bottom: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.price-symbol {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #ff6b35;
 }
 
 .price {
-  font-size: 48rpx;
+  font-size: 52rpx;
   font-weight: 700;
-  color: #ff4d4f;
+  color: #ff6b35;
+  line-height: 1.2;
 }
 
 .original-price {
-  font-size: 28rpx;
-  color: #bbbbbb;
+  font-size: 26rpx;
+  color: #999999;
   text-decoration: line-through;
 }
 
 .name {
   font-size: 36rpx;
-  font-weight: 600;
-  color: #222222;
+  font-weight: 700;
+  color: #1a1a1a;
   display: block;
   line-height: 1.5;
   margin-bottom: 12rpx;
@@ -65,162 +90,238 @@
   font-size: 26rpx;
   color: #888888;
   display: block;
-  line-height: 1.5;
-  margin-bottom: 16rpx;
+  line-height: 1.6;
+  margin-bottom: 20rpx;
+}
+
+.tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.tag-item {
+  background: rgba(255, 107, 53, 0.08);
+  color: #ff6b35;
+  font-size: 22rpx;
+  font-weight: 500;
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  border: 1rpx solid rgba(255, 107, 53, 0.2);
 }
 
 .stock-row {
   display: flex;
-  gap: 32rpx;
-  margin-top: 16rpx;
-  padding-top: 16rpx;
+  gap: 40rpx;
+  margin-top: 24rpx;
+  padding-top: 24rpx;
   border-top: 1rpx solid #f0f0f0;
 }
 
 .stock,
 .sales {
-  font-size: 24rpx;
-  color: #aaaaaa;
+  font-size: 26rpx;
+  color: #999999;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
 }
 
-/* 商品详情文字 */
 .detail-content {
   background: #ffffff;
-  padding: 24rpx;
-  margin-bottom: 16rpx;
+  padding: 32rpx;
+  margin-bottom: 20rpx;
 }
 
 .content-title {
-  font-size: 30rpx;
+  font-size: 32rpx;
   font-weight: 600;
-  color: #333333;
-  margin-bottom: 16rpx;
-  padding-bottom: 16rpx;
-  border-bottom: 1rpx solid #f0f0f0;
+  color: #1a1a1a;
+  margin-bottom: 24rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 2rpx solid #f5f5f5;
+  position: relative;
+}
+
+.content-title::after {
+  content: '';
+  position: absolute;
+  bottom: -2rpx;
+  left: 0;
+  width: 60rpx;
+  height: 4rpx;
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+  border-radius: 2rpx;
 }
 
 .description {
   font-size: 28rpx;
   color: #666666;
   line-height: 1.8;
+  white-space: pre-wrap;
 }
 
-/* 数量选择 */
 .quantity-card {
   background: #ffffff;
-  padding: 24rpx;
-  margin-bottom: 16rpx;
+  padding: 28rpx 32rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .quantity-label {
-  font-size: 28rpx;
-  color: #333333;
-  font-weight: 500;
+  font-size: 30rpx;
+  color: #1a1a1a;
+  font-weight: 600;
 }
 
 .quantity-selector {
   display: flex;
   align-items: center;
-  gap: 0;
+  background: #f5f5f5;
+  border-radius: 48rpx;
+  padding: 4rpx;
 }
 
 .qty-btn {
-  width: 64rpx;
-  height: 64rpx;
-  border: 2rpx solid #dddddd;
+  width: 72rpx;
+  height: 72rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 36rpx;
+  font-size: 40rpx;
   color: #333333;
-  border-radius: 8rpx;
-  background: #f8f8f8;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border-radius: 50%;
+}
+
+.qty-btn:active {
+  background: rgba(255, 107, 53, 0.1);
+  color: #ff6b35;
 }
 
 .qty-btn.disabled {
   color: #cccccc;
-  background: #f0f0f0;
+}
+
+.qty-btn.disabled:active {
+  background: transparent;
+  color: #cccccc;
 }
 
 .qty-value {
-  min-width: 80rpx;
+  min-width: 88rpx;
   text-align: center;
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #222222;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #1a1a1a;
 }
 
-/* 底部操作栏 */
 .bottom-bar {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 120rpx;
+  height: 130rpx;
   background: #ffffff;
   display: flex;
   align-items: center;
   padding: 0 24rpx;
   padding-bottom: env(safe-area-inset-bottom);
-  box-shadow: 0 -2rpx 16rpx rgba(0, 0, 0, 0.08);
-  gap: 16rpx;
+  box-shadow: 0 -4rpx 24rpx rgba(0, 0, 0, 0.08);
+  gap: 20rpx;
 }
 
 .action-icons {
   display: flex;
-  gap: 8rpx;
+  gap: 16rpx;
 }
 
 .icon-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 16rpx;
-  min-width: 80rpx;
+  padding: 0 20rpx;
+  min-width: 88rpx;
+  transition: all 0.2s ease;
+}
+
+.icon-item:active {
+  transform: scale(0.9);
 }
 
 .icon-item .icon {
-  font-size: 40rpx;
+  font-size: 44rpx;
+  margin-bottom: 4rpx;
 }
 
 .icon-item .label {
-  font-size: 20rpx;
-  color: #888888;
-  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: #666666;
 }
 
 .action-buttons {
   flex: 1;
   display: flex;
-  gap: 16rpx;
+  gap: 20rpx;
 }
 
 .btn-add {
   flex: 1;
-  background: #fff7e6;
-  color: #fa8c16;
-  border-radius: 48rpx;
-  height: 80rpx;
+  background: linear-gradient(135deg, #fff7e6 0%, #ffedd5 100%);
+  color: #ff6b35;
+  border-radius: 56rpx;
+  height: 88rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28rpx;
-  font-weight: 500;
-  border: 2rpx solid #ffd591;
+  font-size: 30rpx;
+  font-weight: 600;
+  border: 2rpx solid rgba(255, 107, 53, 0.3);
+  box-shadow: 0 4rpx 16rpx rgba(255, 107, 53, 0.15);
+  transition: all 0.2s ease;
+}
+
+.btn-add:active {
+  transform: scale(0.96);
 }
 
 .btn-buy {
-  flex: 1;
-  background: linear-gradient(135deg, #ff4d4f, #cf1322);
+  flex: 1.2;
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
   color: #ffffff;
-  border-radius: 48rpx;
-  height: 80rpx;
+  border-radius: 56rpx;
+  height: 88rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 30rpx;
+  font-weight: 600;
+  box-shadow: 0 6rpx 20rpx rgba(255, 107, 53, 0.4);
+  transition: all 0.2s ease;
+}
+
+.btn-buy:active {
+  transform: scale(0.96);
+  box-shadow: 0 3rpx 10rpx rgba(255, 107, 53, 0.5);
+}
+
+.goods-specs {
+  background: #ffffff;
+  padding: 28rpx 32rpx;
+  margin-bottom: 20rpx;
+}
+
+.specs-title {
   font-size: 28rpx;
+  color: #333333;
   font-weight: 500;
+  margin-bottom: 16rpx;
+}
+
+.specs-content {
+  font-size: 26rpx;
+  color: #888888;
+  line-height: 1.6;
 }
