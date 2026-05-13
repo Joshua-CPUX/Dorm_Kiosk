@@ -4,12 +4,16 @@ import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zhangrui.common.exception.BusinessException;
 import org.zhangrui.mapper.*;
 import org.zhangrui.model.dto.OrderCreateDTO;
 import org.zhangrui.model.entity.*;
+import org.zhangrui.model.enums.OrderStatus;
+import org.zhangrui.model.enums.PayStatus;
+import org.zhangrui.model.enums.PayType;
 import org.zhangrui.model.vo.AddressVO;
 import org.zhangrui.model.vo.CartProductVO;
 import org.zhangrui.model.vo.OrderVO;
@@ -87,11 +91,12 @@ public class OrderServiceImpl implements IOrderService {
         }
 
         for (CartProductVO product : selectedProducts) {
-            if (product.getQuantity() > product.getProductId()) {
-                Product p = productMapper.selectById(product.getProductId());
-                if (p.getStock() < product.getQuantity()) {
-                    throw new BusinessException("商品[" + product.getName() + "]库存不足");
-                }
+            Product p = productMapper.selectById(product.getProductId());
+            if (p == null) {
+                throw new BusinessException("商品[" + product.getName() + "]不存在");
+            }
+            if (p.getStock() < product.getQuantity()) {
+                throw new BusinessException("商品[" + product.getName() + "]库存不足");
             }
         }
 
@@ -101,8 +106,8 @@ public class OrderServiceImpl implements IOrderService {
         order.setOrderType(dto.getOrderType());
         order.setAddressId(dto.getAddressId());
         order.setRemark(dto.getRemark());
-        order.setStatus(1);
-        order.setPayStatus(0);
+        order.setStatus(OrderStatus.PENDING_PAYMENT.getCode());
+        order.setPayStatus(PayStatus.UNPAID.getCode());
 
         BigDecimal totalAmount = BigDecimal.ZERO;
         for (CartProductVO cp : selectedProducts) {
@@ -141,7 +146,7 @@ public class OrderServiceImpl implements IOrderService {
         if (order == null || !order.getUserId().equals(userId)) {
             throw new BusinessException("订单不存在");
         }
-        if (order.getStatus() != 1) {
+        if (!OrderStatus.PENDING_PAYMENT.getCode().equals(order.getStatus())) {
             throw new BusinessException("订单状态不正确");
         }
 
@@ -160,14 +165,14 @@ public class OrderServiceImpl implements IOrderService {
         if (order == null || !order.getUserId().equals(userId)) {
             throw new BusinessException("订单不存在");
         }
-        if (order.getStatus() != 1) {
+        if (!OrderStatus.PENDING_PAYMENT.getCode().equals(order.getStatus())) {
             throw new BusinessException("订单状态不正确");
         }
 
-        order.setStatus(2);
-        order.setPayStatus(1);
+        order.setStatus(OrderStatus.PAID.getCode());
+        order.setPayStatus(PayStatus.PAID.getCode());
         order.setPayTime(LocalDateTime.now());
-        order.setPayType(1);
+        order.setPayType(PayType.WECHAT.getCode());
         orderMapper.updateById(order);
     }
 
@@ -181,9 +186,9 @@ public class OrderServiceImpl implements IOrderService {
         wrapper.eq(Order::getOrderNo, orderNo);
         Order order = orderMapper.selectOne(wrapper);
 
-        if (order != null && order.getPayStatus() == 0) {
-            order.setPayStatus(1);
-            order.setStatus(2);
+        if (order != null && PayStatus.UNPAID.getCode().equals(order.getPayStatus())) {
+            order.setPayStatus(PayStatus.PAID.getCode());
+            order.setStatus(OrderStatus.PAID.getCode());
             order.setPayTime(LocalDateTime.now());
             orderMapper.updateById(order);
         }
@@ -222,7 +227,7 @@ public class OrderServiceImpl implements IOrderService {
         if (order == null || !order.getUserId().equals(userId)) {
             throw new BusinessException("订单不存在");
         }
-        if (order.getStatus() != 1) {
+        if (!OrderStatus.PENDING_PAYMENT.getCode().equals(order.getStatus())) {
             throw new BusinessException("订单状态不正确，无法取消");
         }
 
@@ -234,7 +239,7 @@ public class OrderServiceImpl implements IOrderService {
             productService.updateStock(item.getProductId(), item.getQuantity());
         }
 
-        order.setStatus(5);
+        order.setStatus(OrderStatus.CANCELLED.getCode());
         order.setCancelTime(LocalDateTime.now());
         orderMapper.updateById(order);
     }
@@ -246,10 +251,10 @@ public class OrderServiceImpl implements IOrderService {
         if (order == null || !order.getUserId().equals(userId)) {
             throw new BusinessException("订单不存在");
         }
-        if (order.getStatus() != 4) {
+        if (!OrderStatus.DELIVERING.getCode().equals(order.getStatus())) {
             throw new BusinessException("订单状态不正确");
         }
-        order.setStatus(4);
+        order.setStatus(OrderStatus.COMPLETED.getCode());
         order.setCompleteTime(LocalDateTime.now());
         orderMapper.updateById(order);
     }
@@ -289,7 +294,7 @@ public class OrderServiceImpl implements IOrderService {
             throw new BusinessException("订单不存在");
         }
         order.setStatus(status);
-        if (status == 4) {
+        if (OrderStatus.COMPLETED.getCode().equals(status)) {
             order.setCompleteTime(LocalDateTime.now());
         }
         orderMapper.updateById(order);
@@ -301,40 +306,18 @@ public class OrderServiceImpl implements IOrderService {
 
     private OrderVO convertToVO(Order order) {
         OrderVO vo = new OrderVO();
-        vo.setId(order.getId());
-        vo.setOrderNo(order.getOrderNo());
-        vo.setUserId(order.getUserId());
-        vo.setTotalAmount(order.getTotalAmount());
-        vo.setPayAmount(order.getPayAmount());
-        vo.setFreight(order.getFreight());
-        vo.setPayType(order.getPayType());
-        vo.setPayTime(order.getPayTime());
-        vo.setPayStatus(order.getPayStatus());
-        vo.setOrderType(order.getOrderType());
-        vo.setStatus(order.getStatus());
-        vo.setRemark(order.getRemark());
-        vo.setCancelTime(order.getCancelTime());
-        vo.setCompleteTime(order.getCompleteTime());
-        vo.setCreateTime(order.getCreateTime());
-
-        vo.setStatusName(getStatusName(order.getStatus()));
-        vo.setOrderTypeName(order.getOrderType() == 1 ? "自取" : "配送");
+        BeanUtils.copyProperties(order, vo);
 
         if (order.getAddressId() != null) {
             Address address = addressMapper.selectById(order.getAddressId());
             if (address != null) {
                 AddressVO addressVO = new AddressVO();
-                addressVO.setId(address.getId());
-                addressVO.setConsignee(address.getConsignee());
-                addressVO.setPhone(address.getPhone());
-                addressVO.setProvince(address.getProvince());
-                addressVO.setCity(address.getCity());
-                addressVO.setDistrict(address.getDistrict());
-                addressVO.setDetail(address.getDetail());
-                addressVO.setFullAddress((address.getProvince() != null ? address.getProvince() : "")
+                BeanUtils.copyProperties(address, addressVO);
+                String fullAddress = (address.getProvince() != null ? address.getProvince() : "")
                         + (address.getCity() != null ? address.getCity() : "")
                         + (address.getDistrict() != null ? address.getDistrict() : "")
-                        + address.getDetail());
+                        + address.getDetail();
+                addressVO.setFullAddress(fullAddress);
                 vo.setAddress(addressVO);
             }
         }
@@ -344,28 +327,11 @@ public class OrderServiceImpl implements IOrderService {
         List<OrderItem> items = orderItemMapper.selectList(wrapper);
         List<OrderVO.OrderItemVO> itemVOs = items.stream().map(item -> {
             OrderVO.OrderItemVO itemVO = new OrderVO.OrderItemVO();
-            itemVO.setId(item.getId());
-            itemVO.setProductId(item.getProductId());
-            itemVO.setProductName(item.getProductName());
-            itemVO.setProductImage(item.getProductImage());
-            itemVO.setPrice(item.getPrice());
-            itemVO.setQuantity(item.getQuantity());
-            itemVO.setTotalPrice(item.getTotalPrice());
+            BeanUtils.copyProperties(item, itemVO);
             return itemVO;
         }).collect(Collectors.toList());
         vo.setItems(itemVOs);
 
         return vo;
-    }
-
-    private String getStatusName(Integer status) {
-        return switch (status) {
-            case 1 -> "待支付";
-            case 2 -> "已支付";
-            case 3 -> "配送中";
-            case 4 -> "已完成";
-            case 5 -> "已取消";
-            default -> "未知";
-        };
     }
 }

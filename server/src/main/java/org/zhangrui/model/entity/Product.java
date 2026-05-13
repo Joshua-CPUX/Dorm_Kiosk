@@ -2,6 +2,7 @@ package org.zhangrui.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.Version;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -43,6 +44,9 @@ public class Product implements Serializable {
     private String description;
 
     private Integer status;
+
+    @Version
+    private Integer version;
 
     @TableLogic
     private Integer deleted;
