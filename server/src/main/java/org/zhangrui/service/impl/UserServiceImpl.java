@@ -16,6 +16,7 @@ import org.zhangrui.model.dto.UserRegisterDTO;
 import org.zhangrui.model.dto.WxLoginDTO;
 import org.zhangrui.model.entity.User;
 import org.zhangrui.model.vo.UserVO;
+import org.zhangrui.service.IActivationCodeService;
 import org.zhangrui.service.IUserService;
 
 import java.util.List;
