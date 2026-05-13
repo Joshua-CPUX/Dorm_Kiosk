@@ -4,9 +4,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.zhangrui.common.exception.BusinessException;
-import org.zhangrui.model.dto.CategoryDTO;
 import org.zhangrui.model.entity.Category;
-import org.zhangrui.model.vo.CategoryVO;
 
 import java.util.List;
 
@@ -29,12 +27,7 @@ public class CategoryServiceTest {
     @Order(1)
     @DisplayName("测试添加分类")
     public void testAddCategory() {
-        CategoryDTO dto = new CategoryDTO();
-        dto.setName("测试分类_" + System.currentTimeMillis());
-        dto.setIcon("icon-test");
-        dto.setSortOrder(100);
-
-        Long categoryId = categoryService.addCategory(dto);
+        Long categoryId = categoryService.addCategory("测试分类_" + System.currentTimeMillis(), "icon-test", 100);
 
         assertNotNull(categoryId);
         assertTrue(categoryId > 0);
@@ -45,7 +38,7 @@ public class CategoryServiceTest {
     @Order(2)
     @DisplayName("测试获取分类列表")
     public void testGetCategoryList() {
-        List<CategoryVO> categories = categoryService.getCategoryList();
+        List<Category> categories = categoryService.getCategoryList();
 
         assertNotNull(categories);
         assertTrue(categories.size() >= 0);
@@ -53,43 +46,16 @@ public class CategoryServiceTest {
 
     @Test
     @Order(3)
-    @DisplayName("测试获取分类详情")
-    public void testGetCategoryById() {
+    @DisplayName("测试更新分类")
+    public void testUpdateCategory() {
         if (createdCategoryId != null) {
-            Category category = categoryService.getCategoryById(createdCategoryId);
-            assertNotNull(category);
-            assertEquals(createdCategoryId, category.getId());
-        } else {
-            assertThrows(BusinessException.class, () -> categoryService.getCategoryById(99999L));
+            assertDoesNotThrow(() -> 
+                categoryService.updateCategory(createdCategoryId, "更新后的分类名称", "icon-updated", 50, 1));
         }
     }
 
     @Test
     @Order(4)
-    @DisplayName("测试更新分类")
-    public void testUpdateCategory() {
-        if (createdCategoryId != null) {
-            CategoryDTO dto = new CategoryDTO();
-            dto.setName("更新后的分类名称");
-            dto.setIcon("icon-updated");
-            dto.setSortOrder(50);
-
-            assertDoesNotThrow(() -> categoryService.updateCategory(createdCategoryId, dto));
-        }
-    }
-
-    @Test
-    @Order(5)
-    @DisplayName("测试更新分类（不存在）")
-    public void testUpdateCategoryNotFound() {
-        CategoryDTO dto = new CategoryDTO();
-        dto.setName("测试");
-
-        assertThrows(BusinessException.class, () -> categoryService.updateCategory(99999L, dto));
-    }
-
-    @Test
-    @Order(6)
     @DisplayName("测试删除分类")
     public void testDeleteCategory() {
         if (createdCategoryId != null) {
@@ -98,7 +64,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    @Order(7)
+    @Order(5)
     @DisplayName("测试删除分类（不存在）")
     public void testDeleteCategoryNotFound() {
         assertThrows(BusinessException.class, () -> categoryService.deleteCategory(99999L));

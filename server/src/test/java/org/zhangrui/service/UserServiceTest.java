@@ -5,16 +5,10 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.zhangrui.common.exception.BusinessException;
-import org.zhangrui.model.dto.*;
-import org.zhangrui.model.entity.Cart;
-import org.zhangrui.model.entity.Product;
-import org.zhangrui.model.enums.OrderStatus;
-import org.zhangrui.model.vo.*;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import org.zhangrui.model.dto.UserLoginDTO;
+import org.zhangrui.model.dto.UserRegisterDTO;
+import org.zhangrui.model.dto.WxLoginDTO;
+import org.zhangrui.model.vo.UserVO;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,7 +32,6 @@ public class UserServiceTest {
         UserRegisterDTO dto = new UserRegisterDTO();
         dto.setUsername("test_user_" + System.currentTimeMillis());
         dto.setPassword("password123");
-        dto.setPhone("13800138000");
         dto.setNickname("测试用户");
 
         UserVO userVO = userService.register(dto);
@@ -70,25 +63,17 @@ public class UserServiceTest {
     @Order(3)
     @DisplayName("测试获取用户信息")
     public void testGetUserInfo() {
-        if (createdUserId != null) {
-            UserVO userVO = userService.getUserInfo(createdUserId);
-            assertNotNull(userVO);
-            assertEquals(createdUserId, userVO.getId());
-        } else {
-            // 如果没有创建用户，测试获取不存在的用户
-            assertThrows(BusinessException.class, () -> userService.getUserInfo(99999L));
-        }
+        UserVO userVO = userService.getUserInfo(1L);
+
+        assertNotNull(userVO);
+        assertNotNull(userVO.getId());
     }
 
     @Test
     @Order(4)
-    @DisplayName("测试获取用户列表")
-    public void testGetUserList() {
-        Page<UserVO> page = userService.getUserList(1, 10, null);
-
-        assertNotNull(page);
-        assertNotNull(page.getRecords());
-        assertTrue(page.getRecords().size() >= 0);
+    @DisplayName("测试获取用户信息（不存在）")
+    public void testGetUserInfoNotFound() {
+        assertThrows(BusinessException.class, () -> userService.getUserInfo(99999L));
     }
 
     @Test
@@ -106,20 +91,19 @@ public class UserServiceTest {
 
     @Test
     @Order(6)
-    @DisplayName("测试更新用户状态")
-    public void testUpdateUserStatus() {
-        if (createdUserId != null) {
-            assertDoesNotThrow(() -> userService.updateUserStatus(createdUserId, 1));
-        }
-    }
+    @DisplayName("测试用户注册（用户名已存在）")
+    public void testUserRegisterDuplicateUsername() {
+        UserRegisterDTO dto = new UserRegisterDTO();
+        dto.setUsername("duplicate_user");
+        dto.setPassword("password123");
+        dto.setNickname("测试用户1");
 
-    @Test
-    @Order(7)
-    @DisplayName("测试激活店主")
-    public void testActivateOwner() {
-        if (createdUserId != null) {
-            assertThrows(BusinessException.class, () -> 
-                userService.activateOwner(createdUserId, "invalid_code"));
-        }
+        // 第一次注册成功
+        UserVO userVO = userService.register(dto);
+        assertNotNull(userVO);
+
+        // 第二次注册应失败
+        dto.setNickname("测试用户2");
+        assertThrows(BusinessException.class, () -> userService.register(dto));
     }
 }

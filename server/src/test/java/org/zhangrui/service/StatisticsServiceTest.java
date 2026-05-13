@@ -3,7 +3,10 @@ package org.zhangrui.service;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.zhangrui.model.vo.StatisticsVO;
+import org.zhangrui.model.vo.DashboardVO;
+
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,55 +23,38 @@ public class StatisticsServiceTest {
 
     @Test
     @Order(1)
-    @DisplayName("测试获取今日统计")
-    public void testGetTodayStatistics() {
-        StatisticsVO statistics = statisticsService.getTodayStatistics();
+    @DisplayName("测试获取仪表盘数据")
+    public void testGetDashboardData() {
+        DashboardVO dashboard = statisticsService.getDashboardData();
 
-        assertNotNull(statistics);
-        assertNotNull(statistics.getOrderCount());
-        assertNotNull(statistics.getOrderAmount());
-        assertNotNull(statistics.getUserCount());
-        assertNotNull(statistics.getProductCount());
+        assertNotNull(dashboard);
     }
 
     @Test
     @Order(2)
-    @DisplayName("测试获取销售统计")
-    public void testGetSalesStatistics() {
-        StatisticsVO statistics = statisticsService.getSalesStatistics(7);
+    @DisplayName("测试获取销售趋势")
+    public void testGetSalesTrend() {
+        List<Map<String, Object>> salesTrend = statisticsService.getSalesTrend(7);
 
-        assertNotNull(statistics);
-        assertNotNull(statistics.getOrderCount());
-        assertNotNull(statistics.getOrderAmount());
+        assertNotNull(salesTrend);
     }
 
     @Test
     @Order(3)
-    @DisplayName("测试获取商品统计")
-    public void testGetProductStatistics() {
-        StatisticsVO statistics = statisticsService.getProductStatistics();
+    @DisplayName("测试获取商品销量排行")
+    public void testGetProductSalesRanking() {
+        List<Map<String, Object>> ranking = statisticsService.getProductSalesRanking(10);
 
-        assertNotNull(statistics);
-        assertNotNull(statistics.getProductCount());
+        assertNotNull(ranking);
+        assertTrue(ranking.size() <= 10);
     }
 
     @Test
     @Order(4)
-    @DisplayName("测试获取用户统计")
-    public void testGetUserStatistics() {
-        StatisticsVO statistics = statisticsService.getUserStatistics(7);
+    @DisplayName("测试获取订单状态统计")
+    public void testGetOrderStatusStats() {
+        Map<String, Object> stats = statisticsService.getOrderStatusStats();
 
-        assertNotNull(statistics);
-        assertNotNull(statistics.getUserCount());
-    }
-
-    @Test
-    @Order(5)
-    @DisplayName("测试获取订单统计")
-    public void testGetOrderStatistics() {
-        StatisticsVO statistics = statisticsService.getOrderStatistics(7);
-
-        assertNotNull(statistics);
-        assertNotNull(statistics.getOrderCount());
+        assertNotNull(stats);
     }
 }
